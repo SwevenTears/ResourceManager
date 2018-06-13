@@ -3,10 +3,10 @@
     package="com.ccyy.resourcemanager">
 
     <!-- 文件读取权限 -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <!-- 文件写入权限 -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -25,10 +25,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".music.MusicActivity" />
-        <activity android:name=".photo.PhotoActivity" />
-        <activity android:name=".text.TextActivity" />
-        <activity android:name=".video.VideoActivity"></activity>
+        <activity android:name=".music.MusicActivity"
+            android:label="音乐播放器"/>
+        <activity android:name=".photo.PhotoActivity"
+            android:label="图片浏览器"/>
+        <activity android:name=".text.TextActivity"
+            android:label="文本编辑器"/>
+        <activity android:name=".video.VideoActivity"
+            android:label="视频播放器" />
     </application>
 
 </manifest>
