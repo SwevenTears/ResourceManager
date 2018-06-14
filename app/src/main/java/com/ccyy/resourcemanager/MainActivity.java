@@ -28,11 +28,7 @@ import com.ccyy.resourcemanager.tools.FileOrder;
 import com.ccyy.resourcemanager.video.VideoActivity;
 
 import java.io.File;
-import java.text.Collator;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
