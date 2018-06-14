@@ -51,12 +51,12 @@ public class FileOperation {
     }
 
     /**
-     * @param parent_folder_name 需要查询文件数量的文件夹名称
+     * @param parent_folder_path 需要查询文件数量的文件夹名称
      * @return 当前文件夹的所有文件数量、文件夹数量和文件数量
      */
-    public static int[] get_FolderCount_FileCount(String parent_folder_name){
+    public static int[] get_FolderCount_FileCount(String parent_folder_path){
         int count[]={0,0,0};
-        File parent_folder=new File(parent_folder_name);
+        File parent_folder=new File(parent_folder_path);
         File[] parents=parent_folder.listFiles();
         for(int i=0;i<parents.length;i++){
             File child=parents[0];

@@ -49,8 +49,6 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
      */
     public FileAdapter(Context context, ArrayList<FileData> data,ArrayList<FileData> extra_Information) {
         inflater = LayoutInflater.from(context);
-        this.fileData =new ArrayList<>();
-        this.fileData_More=new ArrayList<>();
         this.fileData_More=extra_Information;
         this.fileData =data;
 

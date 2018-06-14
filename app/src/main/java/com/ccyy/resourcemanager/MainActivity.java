@@ -17,10 +17,16 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.Html;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.ccyy.resourcemanager.main.DeviceShow;
 import com.ccyy.resourcemanager.main.FileAdapter;
@@ -30,6 +36,7 @@ import com.ccyy.resourcemanager.photo.PhotoActivity;
 import com.ccyy.resourcemanager.text.TextActivity;
 import com.ccyy.resourcemanager.tools.ExitSure;
 import com.ccyy.resourcemanager.tools.FileOperation;
+import com.ccyy.resourcemanager.tools.T;
 import com.ccyy.resourcemanager.video.VideoActivity;
 
 import java.io.File;
@@ -39,7 +46,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private LinearLayoutManager linearLayoutManager;
-    private CardView show_device;
+    private LinearLayout show_device;
     public RecyclerView file_recycler;
 
     private String rootPath=FileOperation.getSDPath();
@@ -62,10 +69,10 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        show_device=findViewById(R.id.file_device);
-
         initFile();
-        new DeviceShow();
+
+
+
     }
 
     @Override
@@ -137,18 +144,20 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void initFile(){
+        childFolder_path=rootPath;
+
         file_recycler=findViewById(R.id.file_list);
         linearLayoutManager=new LinearLayoutManager(this);
 
-        childFolder_path=rootPath;
         getFileDir(rootPath,false);
     }
 
     /**
      * 取得文件架构的method
      * @param filePath 文件当前目录
+     * @param isParent 当前操作是否为点击“返回上一级”
      */
-    private void getFileDir(String filePath,boolean isParent) {
+    public void getFileDir(String filePath,boolean isParent) {
 
         int previous_position=0;
 
@@ -175,14 +184,18 @@ public class MainActivity extends AppCompatActivity
         for (File temp : files) {
 
             if (temp.exists()) {
-                if (temp.isDirectory()) //是否是文件夹
+                if (temp.isDirectory()) {//是否是文件夹
+                    int folder_count = FileOperation.get_FolderCount_FileCount(temp.getPath())[1];
+                    int file_count = FileOperation.get_FolderCount_FileCount(temp.getPath())[2];
+                    extra_Information.add(new FileData(temp.lastModified(), temp.length(), folder_count, file_count));
                     allFile.add(new FileData(temp.getName(), temp.getPath()));
-                else
-                    file.add(new FileData(temp.getName(), temp.getPath()));
+                }
 
-                int folder_count = FileOperation.get_FolderCount_FileCount(temp.getName())[1];
-                int file_count = FileOperation.get_FolderCount_FileCount(temp.getName())[2];
-                extra_Information.add(new FileData(temp.lastModified(), temp.length(), folder_count, file_count));
+                else{
+                    extra_Information.add(new FileData(temp.lastModified(), temp.length(), 0, 0));
+                    file.add(new FileData(temp.getName(), temp.getPath()));
+                }
+
             }
         }
         ArrayList<FileData> order_allFile= FileOperation.order(allFile,isRoot);
@@ -204,15 +217,22 @@ public class MainActivity extends AppCompatActivity
     /**
      * @param data {@link ArrayList<FileData>} 进行渲染item
      * @param extra_Information 额外的文件信息
+     * @param previous_position 当前文件目录在上一级文件夹目录的位置
+     * @param isParent 当前操作是否为点击“返回上一级”
      */
     private void loadData
     (@NonNull ArrayList<FileData> data,ArrayList<FileData> extra_Information,
      int previous_position,boolean isParent){
 
+        show_device=findViewById(R.id.file_device);
+        show_device.removeAllViews();
+        new DeviceShow(MainActivity.this,show_device,rootPath,childFolder_path,isParent);
+
         if(isParent){
             // 通过LayoutManager的srcollToPositionWithOffset方法进行定位
             linearLayoutManager.scrollToPositionWithOffset(previous_position, 0);
         }
+
         file_recycler.setLayoutManager(linearLayoutManager);
 
         FileAdapter fileAdapter=new FileAdapter(MainActivity.this,data,extra_Information);
@@ -227,11 +247,11 @@ public class MainActivity extends AppCompatActivity
                 childFolder_path=path;
 
                 if(name.equals("previous")){
-                    Log.i("当前点击的文件或文件夹名称:",temp.getName());
+                    Log.i("当前点击的文件或文件夹名称",temp.getName());
                     getFileDir(parentPath,true);
                 }
                 else{
-                    Log.i("当前点击的文件或文件夹名称:",name);
+                    Log.i("当前点击的文件或文件夹名称",name);
                     if(temp.isDirectory())
                         getFileDir(path,false);
                 }
@@ -239,6 +259,8 @@ public class MainActivity extends AppCompatActivity
             }
         });
     }
+
+
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
