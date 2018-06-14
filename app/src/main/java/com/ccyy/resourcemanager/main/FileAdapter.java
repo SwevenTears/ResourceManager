@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ccyy.resourcemanager.R;
+import com.ccyy.resourcemanager.tools.FileOperation;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -140,10 +141,18 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
                 holder.file_img.setImageBitmap(folder_icon);
             }
             else{//文件
-                holder.file_img.setImageBitmap(mIcon4);
+                try {
+                    Bitmap bitmap = BitmapFactory.decodeFile(path);
+                    holder.file_img.setImageBitmap
+                            (FileOperation.setImgSize(path,bitmap,80,100));
+                } catch (Exception e) {
+                    holder.file_img.setImageBitmap(mIcon4);
+                }
             }
         }
     }
+
+
 
     @Override
     public int getItemCount() {

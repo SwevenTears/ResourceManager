@@ -46,20 +46,27 @@
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:stretchColumns="0,1,2,3,4">
+        android:stretchColumns="0,1,2,3,4"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:background="#FFFFFF">
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center">
 
                 <TextView
                     android:text="发送"
                     android:id="@+id/file_send"
+                    android:gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
             <TextView
                 android:id="@+id/file_cut"
+                android:gravity="center"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="剪切" />
@@ -67,18 +74,21 @@
             <TextView
                     android:text="复制"
                     android:id="@+id/file_copy"
+                    android:gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
                 <TextView
                     android:text="删除"
                     android:id="@+id/file_delete"
+                    android:gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
                 <TextView
                     android:text="更多"
                     android:id="@+id/file_more"
+                    android:gravity="center"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 

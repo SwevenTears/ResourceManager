@@ -1,11 +1,17 @@
 package com.ccyy.resourcemanager.tools;
 
+import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 
 import com.ccyy.resourcemanager.main.FileData;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -100,4 +106,34 @@ public class FileOperation {
         assert sdDir != null;
         return sdDir.toString();
     }
+
+    /**
+     * @param path  图片的完整地址
+     * @param bm bitmap图片
+     * @param newWidth 需要设置的宽度
+     * @param newHeight 需要设置的高度
+     * @return 新的图片
+     */
+    public static Bitmap setImgSize(String path,Bitmap bm, int newWidth , int newHeight){
+        // 获得图片的宽高.
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        // 计算缩放比例.
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        // 取得想要缩放的matrix参数.
+        Matrix matrix = new Matrix();
+        matrix.postScale(scaleWidth, scaleHeight);
+        // 得到新的图片.
+        Bitmap newbm = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, true);
+        OutputStream out= null;
+        try {
+            out = new FileOutputStream(new File(path));
+        } catch (FileNotFoundException e) {
+            Log.e("压缩图片进程","失败，出错");
+        }
+        newbm.compress(Bitmap.CompressFormat.PNG,20,out);
+        return newbm;
+    }
+
 }

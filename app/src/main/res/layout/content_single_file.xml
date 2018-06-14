@@ -9,8 +9,7 @@
     <ImageView
         android:id="@+id/file_img"
         android:layout_width="51dp"
-        android:layout_height="50dp"
-        android:background="@drawable/folder" />
+        android:layout_height="50dp" />
 
 
     <LinearLayout
