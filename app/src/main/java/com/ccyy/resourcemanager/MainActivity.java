@@ -24,6 +24,7 @@ import com.ccyy.resourcemanager.main.FileData;
 import com.ccyy.resourcemanager.music.MusicActivity;
 import com.ccyy.resourcemanager.photo.PhotoActivity;
 import com.ccyy.resourcemanager.text.TextActivity;
+import com.ccyy.resourcemanager.tools.FileOrder;
 import com.ccyy.resourcemanager.video.VideoActivity;
 
 import java.io.File;
@@ -187,8 +188,8 @@ public class MainActivity extends AppCompatActivity
                 extra_Information.add(new FileData(temp.lastModified(),temp.length(),folder_count,file_count));
             }
         }
-        ArrayList<FileData> order_allFile=order(allFile,isRoot);
-        ArrayList<FileData> order_file=order(file,false);
+        ArrayList<FileData> order_allFile= FileOrder.order(allFile,isRoot);
+        ArrayList<FileData> order_file= FileOrder.order(file,false);
         order_allFile.addAll(order_file);
         loadData(order_allFile,extra_Information);
 
@@ -214,38 +215,6 @@ public class MainActivity extends AppCompatActivity
                     getFileDir(path);
             }
         });
-    }
-
-    /**
-     * @param list 需要进行排序的数据
-     * @param isRoot 第一个数据是否需要进行排序（针对有返回上一级的子目录）
-     * @return 经过排序后的 {@link ArrayList<FileData>} 数据
-     */
-    private static ArrayList<FileData> order(ArrayList<FileData> list,boolean isRoot){
-        ArrayList<FileData> new_list=new ArrayList<>();
-        String names[]=new String[list.size()];
-        String paths[]=new String[list.size()];
-        int n=0;
-        if(isRoot) {
-            n = 1;
-            new_list.add(new FileData(list.get(0).getName(),list.get(0).getPath()));
-            names[0]="Root";
-        }
-        for (int i=n;i<list.size();i++){
-            names[i]=list.get(i).getName();
-            paths[i]=list.get(i).getPath();
-        }
-        Comparator china = Collator.getInstance(Locale.CHINA);
-        Arrays.sort(names,china);
-        for(int i=0;i<names.length;i++){
-            Log.i("第一个文件：",names[0]);
-            for(int j=0;j<paths.length;j++){
-                if(names[i].equals(list.get(j).getName())){
-                    new_list.add(new FileData(names[i],paths[j]));
-                }
-            }
-        }
-        return new_list;
     }
 
     @Override
