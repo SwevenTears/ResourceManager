@@ -12,7 +12,7 @@
 
 
     <android.support.v7.widget.CardView
-        android:id="@+id/file_desc"
+        android:id="@+id/file_device"
         android:layout_width="match_parent"
         android:layout_height="30dp" />
 

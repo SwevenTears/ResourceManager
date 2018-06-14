@@ -12,6 +12,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,6 +22,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.ccyy.resourcemanager.main.DeviceShow;
 import com.ccyy.resourcemanager.main.FileAdapter;
 import com.ccyy.resourcemanager.main.FileData;
 import com.ccyy.resourcemanager.music.MusicActivity;
@@ -37,7 +39,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private LinearLayoutManager linearLayoutManager;
-
+    private CardView show_device;
     public RecyclerView file_recycler;
 
     private String rootPath=FileOperation.getSDPath();
@@ -60,7 +62,10 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+        show_device=findViewById(R.id.file_device);
+
         initFile();
+        new DeviceShow();
     }
 
     @Override
@@ -248,6 +253,5 @@ public class MainActivity extends AppCompatActivity
         }
         return true;
     }
-
 
 }
