@@ -33,7 +33,6 @@
             android:label="文本编辑器"/>
         <activity android:name=".video.VideoActivity"
             android:label="视频播放器" />
-        <activity android:name=".main.ContentActivity"/>
 
     </application>
 
