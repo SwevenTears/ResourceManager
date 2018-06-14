@@ -36,7 +36,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
     private onClickFolder mClickFolder=null;
 
     public interface onClickFolder{
-        void onClick(String name,String path);
+        void onClick(String name,String path,int previous_position);
     }
 
     public void setOnClickFolder(onClickFolder onClickFolder){
@@ -69,6 +69,11 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
         return new FileViewHolder(view);
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        return super.getItemViewType(position);
+    }
+
     /**
      * 渲染数据
      * @param holder
@@ -81,9 +86,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
         holder.file_name.setText(name);
 
         judgeFileType(path,name,holder);
-
-
-        addFolderClick(path,name,holder);
+        addFolderClick(path,name,holder,position);
     }
 
     /**
@@ -92,33 +95,30 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
      * @param name 文件或文件夹名称
      * @param holder
      */
-    private void addFolderClick(final String path, final String name, FileViewHolder holder) {
-        if(name.equals("root")){
-            if(mClickFolder!=null){
+    private void addFolderClick(final String path, final String name, FileViewHolder holder, final int previous_position) {
+        if(mClickFolder!=null){
+            if(name.equals("root")){
                 holder.file_name.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mClickFolder.onClick(name,path);
+                        mClickFolder.onClick(name,path,previous_position);
                     }
                 });
             }
-        }
-        else{
-            File file = new File(path);
-            if (file.exists()) {
-                if(file.isDirectory())
-                    if(mClickFolder!=null){
+            else{
+                File file = new File(path);
+                if (file.exists()) {
+                    if(file.isDirectory())
                         holder.file_item.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                mClickFolder.onClick(name,path);
+                                mClickFolder.onClick(name,path,previous_position);
+
                             }
                         });
-                    }
+                }
             }
         }
-
-
     }
 
     /**
@@ -130,17 +130,20 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
     private void judgeFileType(String path,String name,FileViewHolder holder){
         File f=new File(path);
 
-        if(name.equals("root")) {
+        if(name.equals("previous")) {
             holder.file_name.setText("返回上一级");
             holder.file_img.setImageBitmap(folder_previous);
+            holder.file_check.setVisibility(View.INVISIBLE);
         }
         else {
             //这时这一项是文件或者是文件夹
             holder.file_name.setText(f.getName());
-            if(f.isDirectory())
+            if(f.isDirectory()) {//文件夹
                 holder.file_img.setImageBitmap(folder_icon);
-            else
+            }
+            else{//文件
                 holder.file_img.setImageBitmap(mIcon4);
+            }
         }
     }
 

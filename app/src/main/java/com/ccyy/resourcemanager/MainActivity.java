@@ -1,8 +1,10 @@
 package com.ccyy.resourcemanager;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -24,7 +26,8 @@ import com.ccyy.resourcemanager.main.FileData;
 import com.ccyy.resourcemanager.music.MusicActivity;
 import com.ccyy.resourcemanager.photo.PhotoActivity;
 import com.ccyy.resourcemanager.text.TextActivity;
-import com.ccyy.resourcemanager.tools.FileOrder;
+import com.ccyy.resourcemanager.tools.ExitSure;
+import com.ccyy.resourcemanager.tools.FileOperation;
 import com.ccyy.resourcemanager.video.VideoActivity;
 
 import java.io.File;
@@ -32,6 +35,14 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    private LinearLayoutManager linearLayoutManager;
+
+    public RecyclerView file_recycler;
+
+    private String rootPath=FileOperation.getSDPath();
+    private String childFolder_path;
+    private String childFolder_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,34 +131,30 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public RecyclerView file_recycler;
-
-    private String rootPath="/storage/sdcard0";
-    private String childFolder;
-
     public void initFile(){
         file_recycler=findViewById(R.id.file_list);
-        LinearLayoutManager linearLayoutManager=new LinearLayoutManager(this);
-        file_recycler.setLayoutManager(linearLayoutManager);
+        linearLayoutManager=new LinearLayoutManager(this);
 
-        getFileDir(rootPath);
+        childFolder_path=rootPath;
+        getFileDir(rootPath,false);
     }
 
     /**
      * 取得文件架构的method
      * @param filePath 文件当前目录
      */
-    private void getFileDir(String filePath) {
+    private void getFileDir(String filePath,boolean isParent) {
 
-        childFolder=filePath;
+        int previous_position=0;
 
         File f=new File(filePath);
         //找到f下的所有文件的列表
         File[] files=f.listFiles();
 
-        ArrayList<FileData> allFile=new ArrayList<>();
-        ArrayList<FileData> file=new ArrayList<>();
-        ArrayList<FileData> extra_Information=new ArrayList<>();
+        ArrayList<FileData>
+                allFile=new ArrayList<>()
+                ,file=new ArrayList<>()
+                ,extra_Information=new ArrayList<>();
 
         Log.i("当前目录",filePath);
         Log.i("根目录：",rootPath);
@@ -156,38 +163,35 @@ public class MainActivity extends AppCompatActivity
 
         if(!filePath.equals(rootPath)) {
             /* 设定为[并到上一层] */
-            allFile.add(new FileData("root",f.getPath()));
+            allFile.add(new FileData("previous",f.getPath()));
             isRoot=true;
         }
         /* 将所有文件存入ArrayList中 */
-        for(int i=0;i<files.length;i++) {
+        for (File temp : files) {
 
-            File temp=files[i];
-            if(temp.exists()){
-                int folder_count=0,file_count=0;
-                if(temp.isDirectory()) {//是否是文件夹
-                    File[] child=temp.listFiles();
-                    for (int j=0;j<child.length;j++){
-                        File child_item=child[j];
-                        if(child_item.isDirectory())
-                            folder_count++;
-                        else
-                            file_count++;
-                    }
-
+            if (temp.exists()) {
+                if (temp.isDirectory()) //是否是文件夹
                     allFile.add(new FileData(temp.getName(), temp.getPath()));
-                }
                 else
-                    file.add(new FileData(temp.getName(),temp.getPath()));
+                    file.add(new FileData(temp.getName(), temp.getPath()));
 
-
-                extra_Information.add(new FileData(temp.lastModified(),temp.length(),folder_count,file_count));
+                int folder_count = FileOperation.get_FolderCount_FileCount(temp.getName())[1];
+                int file_count = FileOperation.get_FolderCount_FileCount(temp.getName())[2];
+                extra_Information.add(new FileData(temp.lastModified(), temp.length(), folder_count, file_count));
             }
         }
-        ArrayList<FileData> order_allFile= FileOrder.order(allFile,isRoot);
-        ArrayList<FileData> order_file= FileOrder.order(file,false);
+        ArrayList<FileData> order_allFile= FileOperation.order(allFile,isRoot);
+        ArrayList<FileData> order_file= FileOperation.order(file,false);
+        if(isParent){
+            ArrayList<String> folder_names = new ArrayList<>();
+            for(int i=0;i<order_allFile.size();i++)
+                folder_names.add(order_allFile.get(i).getName());
+            childFolder_name = new File(childFolder_path).getName();
+            previous_position=FileOperation.find_folder_position(childFolder_name,folder_names);
+        }
+
         order_allFile.addAll(order_file);
-        loadData(order_allFile,extra_Information);
+        loadData(order_allFile,extra_Information,previous_position,isParent);
 
     }
 
@@ -196,19 +200,37 @@ public class MainActivity extends AppCompatActivity
      * @param data {@link ArrayList<FileData>} 进行渲染item
      * @param extra_Information 额外的文件信息
      */
-    private void loadData(@NonNull ArrayList<FileData> data,ArrayList<FileData> extra_Information){
+    private void loadData
+    (@NonNull ArrayList<FileData> data,ArrayList<FileData> extra_Information,
+     int previous_position,boolean isParent){
+
+        if(isParent){
+            // 通过LayoutManager的srcollToPositionWithOffset方法进行定位
+            linearLayoutManager.scrollToPositionWithOffset(previous_position, 0);
+        }
+        file_recycler.setLayoutManager(linearLayoutManager);
+
         FileAdapter fileAdapter=new FileAdapter(MainActivity.this,data,extra_Information);
         file_recycler.setAdapter(fileAdapter);
         file_recycler.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
 
         fileAdapter.setOnClickFolder(new FileAdapter.onClickFolder() {
             @Override
-            public void onClick(String name, String path) {
-                if(name.equals("root")){
-                    getFileDir(new File(path).getParent());
+            public void onClick(String name, String path,int previous_position) {
+                File temp=new File(path);
+                String parentPath=temp.getParent();
+                childFolder_path=path;
+
+                if(name.equals("previous")){
+                    Log.i("当前点击的文件或文件夹名称:",temp.getName());
+                    getFileDir(parentPath,true);
                 }
-                else
-                    getFileDir(path);
+                else{
+                    Log.i("当前点击的文件或文件夹名称:",name);
+                    if(temp.isDirectory())
+                        getFileDir(path,false);
+                }
+
             }
         });
     }
@@ -216,37 +238,16 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if(!childFolder.equals(rootPath)){
-                getFileDir(new File(childFolder).getParent());
+            if(!childFolder_path.equals(rootPath)){
+                getFileDir(new File(childFolder_path).getParent(),true);
+                childFolder_path=new File(childFolder_path).getParentFile().getPath();
             }
             else{
-                exitApplication();
+                ExitSure.exitApp(this);
             }
         }
         return true;
     }
 
-    /**
-     * 退出确认
-     */
-    private void exitApplication() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setIcon(R.drawable.ic_launcher_background);
-        builder.setTitle("退出");
-        builder.setMessage("确定退出吗？");
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
 
-            public void onClick(DialogInterface dialog, int which) {
-                System.exit(0);
-
-            }
-        });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface arg0, int arg1) {
-
-            }
-        });
-        builder.show();
-    }
 }
