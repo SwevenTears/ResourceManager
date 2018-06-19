@@ -144,7 +144,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
                 try {
                     Bitmap bitmap = BitmapFactory.decodeFile(path);
                     holder.file_img.setImageBitmap
-                            (FileOperation.setImgSize(path,bitmap,80,100));
+                            (FileOperation.setImgSize(name,bitmap,80,100));
                 } catch (Exception e) {
                     holder.file_img.setImageBitmap(mIcon4);
                 }

@@ -1,36 +1,29 @@
 package com.ccyy.resourcemanager;
 
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
-import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ccyy.resourcemanager.main.DeviceShow;
 import com.ccyy.resourcemanager.main.FileAdapter;
 import com.ccyy.resourcemanager.main.FileData;
+import com.ccyy.resourcemanager.main.FileTools;
 import com.ccyy.resourcemanager.music.MusicActivity;
 import com.ccyy.resourcemanager.photo.PhotoActivity;
 import com.ccyy.resourcemanager.text.TextActivity;
@@ -71,8 +64,23 @@ public class MainActivity extends AppCompatActivity
 
         initFile();
 
+        setButton();
+
+    }
+
+    private void setButton() {
+        TextView file_send = findViewById(R.id.file_send);
 
 
+        file_send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                T.tips(MainActivity.this,"分享");
+                //TODO 一个测试例子
+                Intent intent= FileTools.shareFile("/sdcard/cb72f994370f9e817eaa495aaf428644.png");
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -144,6 +152,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void initFile(){
+
+        //初始化APP的临时文件储存位置、APP配置文件位置
+        ResourceManager.createAppPath(ResourceManager.App_Path);
+        ResourceManager.createAppPath(ResourceManager.App_Temp_Image_Path);
+        ResourceManager.createAppPath(ResourceManager.App_Temp_Video_Image_Path);
+
         childFolder_path=rootPath;
 
         file_recycler=findViewById(R.id.file_list);
@@ -176,7 +190,7 @@ public class MainActivity extends AppCompatActivity
         boolean isRoot=false;
 
         if(!filePath.equals(rootPath)) {
-            /* 设定为[并到上一层] */
+            /* 设定为[返回上一级] */
             allFile.add(new FileData("previous",f.getPath()));
             isRoot=true;
         }

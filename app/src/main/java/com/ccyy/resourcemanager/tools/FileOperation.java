@@ -1,11 +1,15 @@
 package com.ccyy.resourcemanager.tools;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 
+import com.ccyy.resourcemanager.ResourceManager;
 import com.ccyy.resourcemanager.main.FileData;
 
 import java.io.File;
@@ -108,13 +112,13 @@ public class FileOperation {
     }
 
     /**
-     * @param path  图片的完整地址
+     * @param name  图片的完整地址
      * @param bm bitmap图片
      * @param newWidth 需要设置的宽度
      * @param newHeight 需要设置的高度
      * @return 新的图片
      */
-    public static Bitmap setImgSize(String path,Bitmap bm, int newWidth , int newHeight){
+    public static Bitmap setImgSize(String name,Bitmap bm, int newWidth , int newHeight){
         // 获得图片的宽高.
         int width = bm.getWidth();
         int height = bm.getHeight();
@@ -128,7 +132,7 @@ public class FileOperation {
         Bitmap newbm = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, true);
         OutputStream out= null;
         try {
-            out = new FileOutputStream(new File(path));
+            out = new FileOutputStream(new File(ResourceManager.App_Temp_Image_Path+"/"+name));
         } catch (FileNotFoundException e) {
             Log.e("压缩图片进程","失败，出错");
         }
