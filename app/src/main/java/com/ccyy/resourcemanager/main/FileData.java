@@ -1,5 +1,7 @@
 package com.ccyy.resourcemanager.main;
 
+import android.graphics.Bitmap;
+
 import java.util.Date;
 
 /**
@@ -9,6 +11,7 @@ import java.util.Date;
 public class FileData {
     public String name;
     public String  path;
+    public Bitmap fileIcon;
     public long last_date;
     public long size;
     public int folder_count;
@@ -24,12 +27,42 @@ public class FileData {
     }
 
     /**
+     * @param name 文件或文件夹名称
+     * @param path 文件或文件夹地址
+     * @param fileIcon 相匹配的图标
+     */
+    public FileData(String name, String path, Bitmap fileIcon) {
+        this.name = name;
+        this.path = path;
+        this.fileIcon = fileIcon;
+    }
+
+    /**
      * @param last_date 最后修改时间
      * @param size 文件大小
      * @param folder_count 子文件夹数量
      * @param file_count 子文件数量
      */
     public FileData(long last_date, long size, int folder_count, int file_count) {
+        this.last_date = last_date;
+        this.size = size;
+        this.folder_count = folder_count;
+        this.file_count = file_count;
+    }
+
+    /**
+     * @param name 文件名
+     * @param path 文件地址
+     * @param fileIcon 文件对应图标
+     * @param last_date 最后修改日期
+     * @param size 文件大小
+     * @param folder_count 子文件下文件夹数量
+     * @param file_count 子文件下文件数量
+     */
+    public FileData(String name, String path, Bitmap fileIcon, long last_date, long size, int folder_count, int file_count) {
+        this.name = name;
+        this.path = path;
+        this.fileIcon = fileIcon;
         this.last_date = last_date;
         this.size = size;
         this.folder_count = folder_count;
@@ -50,6 +83,14 @@ public class FileData {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public Bitmap getFileIcon() {
+        return fileIcon;
+    }
+
+    public void setFileIcon(Bitmap fileIcon) {
+        this.fileIcon = fileIcon;
     }
 
     public long getLast_date() {

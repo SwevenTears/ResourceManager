@@ -37,23 +37,21 @@ public class FileOperation {
     public static ArrayList<FileData> order(ArrayList<FileData> list,boolean isRoot){
         ArrayList<FileData> new_list=new ArrayList<>();
         String names[]=new String[list.size()];
-        String paths[]=new String[list.size()];
         int n=0;
         if(isRoot) {
             n = 1;
-            new_list.add(new FileData(list.get(0).getName(),list.get(0).getPath()));
+            new_list.add(list.get(0));
             names[0]="///";
         }
         for (int i=n;i<list.size();i++){
             names[i]=list.get(i).getName();
-            paths[i]=list.get(i).getPath();
         }
         Comparator china = Collator.getInstance(Locale.CHINA);
         Arrays.sort(names,china);
         for(int i=0;i<names.length;i++){
-            for(int j=0;j<paths.length;j++){
+            for(int j=0;j<names.length;j++){
                 if(names[i].equals(list.get(j).getName())){
-                    new_list.add(new FileData(names[i],paths[j]));
+                    new_list.add(new FileData(names[i],list.get(j).getPath(),list.get(j).getFileIcon()));
                 }
             }
         }

@@ -1,7 +1,11 @@
 package com.ccyy.resourcemanager;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -29,6 +33,7 @@ import com.ccyy.resourcemanager.photo.PhotoActivity;
 import com.ccyy.resourcemanager.text.TextActivity;
 import com.ccyy.resourcemanager.tools.ExitSure;
 import com.ccyy.resourcemanager.tools.FileOperation;
+import com.ccyy.resourcemanager.tools.FileType;
 import com.ccyy.resourcemanager.tools.T;
 import com.ccyy.resourcemanager.video.VideoActivity;
 
@@ -171,59 +176,29 @@ public class MainActivity extends AppCompatActivity
      * @param filePath 文件当前目录
      * @param isParent 当前操作是否为点击“返回上一级”
      */
-    public void getFileDir(String filePath,boolean isParent) {
+    public void getFileDir(String filePath, boolean isParent) {
 
         int previous_position=0;
 
-        File f=new File(filePath);
-        //找到f下的所有文件的列表
-        File[] files=f.listFiles();
-
-        ArrayList<FileData>
-                allFile=new ArrayList<>()
-                ,file=new ArrayList<>()
-                ,extra_Information=new ArrayList<>();
+        ArrayList<FileData> extra_Information=new ArrayList<>();
 
         Log.i("当前目录",filePath);
         Log.i("根目录：",rootPath);
 
-        boolean isRoot=false;
+        new FileTools(MainActivity.this,rootPath);
 
-        if(!filePath.equals(rootPath)) {
-            /* 设定为[返回上一级] */
-            allFile.add(new FileData("previous",f.getPath()));
-            isRoot=true;
-        }
-        /* 将所有文件存入ArrayList中 */
-        for (File temp : files) {
+        ArrayList<FileData> allFile=FileTools.getFileList(filePath);
 
-            if (temp.exists()) {
-                if (temp.isDirectory()) {//是否是文件夹
-                    int folder_count = FileOperation.get_FolderCount_FileCount(temp.getPath())[1];
-                    int file_count = FileOperation.get_FolderCount_FileCount(temp.getPath())[2];
-                    extra_Information.add(new FileData(temp.lastModified(), temp.length(), folder_count, file_count));
-                    allFile.add(new FileData(temp.getName(), temp.getPath()));
-                }
-
-                else{
-                    extra_Information.add(new FileData(temp.lastModified(), temp.length(), 0, 0));
-                    file.add(new FileData(temp.getName(), temp.getPath()));
-                }
-
-            }
-        }
-        ArrayList<FileData> order_allFile= FileOperation.order(allFile,isRoot);
-        ArrayList<FileData> order_file= FileOperation.order(file,false);
         if(isParent){
             ArrayList<String> folder_names = new ArrayList<>();
-            for(int i=0;i<order_allFile.size();i++)
-                folder_names.add(order_allFile.get(i).getName());
+
+            for(int i=0;i<allFile.size();i++)
+                folder_names.add(allFile.get(i).getName());
             childFolder_name = new File(childFolder_path).getName();
             previous_position=FileOperation.find_folder_position(childFolder_name,folder_names);
         }
 
-        order_allFile.addAll(order_file);
-        loadData(order_allFile,extra_Information,previous_position,isParent);
+        loadData(allFile,extra_Information,previous_position,isParent);
 
     }
 
@@ -243,7 +218,7 @@ public class MainActivity extends AppCompatActivity
         new DeviceShow(MainActivity.this,show_device,rootPath,childFolder_path,isParent);
 
         if(isParent){
-            // 通过LayoutManager的srcollToPositionWithOffset方法进行定位
+            // 通过 LayoutManager 的 srcollToPositionWithOffset 方法进行定位
             linearLayoutManager.scrollToPositionWithOffset(previous_position, 0);
         }
 
@@ -253,7 +228,7 @@ public class MainActivity extends AppCompatActivity
         file_recycler.setAdapter(fileAdapter);
         file_recycler.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
 
-        fileAdapter.setOnClickFolder(new FileAdapter.onClickFolder() {
+        fileAdapter.setOnClickItem(new FileAdapter.onClickItem() {
             @Override
             public void onClick(String name, String path,int previous_position) {
                 File temp=new File(path);
@@ -267,7 +242,8 @@ public class MainActivity extends AppCompatActivity
                 else{
                     Log.i("当前点击的文件或文件夹名称",name);
                     if(temp.isDirectory())
-                        getFileDir(path,false);
+                        getFileDir(path, false);
+                    T.tips(MainActivity.this,name+"\n"+path);
                 }
 
             }

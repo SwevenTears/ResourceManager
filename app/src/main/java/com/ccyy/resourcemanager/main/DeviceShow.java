@@ -49,7 +49,7 @@ public class DeviceShow{
                 link_btn.setText(temp+">");
             else
                 link_btn.setText(temp);
-//            link_btn.setOnClickListener(new Jump_path(context,temp,i,parent_path_shows));
+            link_btn.setOnClickListener(new Jump_path(context,temp,i,parent_path_shows));
             show_device.addView(link_btn);
             i++;
         }
@@ -74,8 +74,8 @@ public class DeviceShow{
         @Override
         public void onClick(View v) {
             T.tips(context,jump_path);
-            MainActivity main=new MainActivity();
-            main.getFileDir(jump_path,false);
+//            MainActivity main=new MainActivity();
+//            main.getFileDir(jump_path,false);
         }
     }
 }
