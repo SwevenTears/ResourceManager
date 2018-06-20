@@ -55,6 +55,9 @@ public class FileType {
     public static final int FIRST_PLAYLIST_FILE_TYPE = FILE_TYPE_M3U;
     public static final int LAST_PLAYLIST_FILE_TYPE = FILE_TYPE_WPL;
 
+    //文本文档
+    public static final int FILE_TYPE_TEXT     = 51;
+
     //静态内部类
     static class MediaFileType {
 
@@ -107,6 +110,8 @@ public class FileType {
         addFileType("PLS", FILE_TYPE_PLS, "audio/x-scpls");
         addFileType("WPL", FILE_TYPE_WPL, "application/vnd.ms-wpl");
 
+        addFileType("TXT", FILE_TYPE_TEXT, "text/plain");
+
         // compute file extensions list for native Media Scanner
         StringBuilder builder = new StringBuilder();
         Iterator<String> iterator = sFileTypeMap.keySet().iterator();
@@ -144,12 +149,18 @@ public class FileType {
                 fileType <= LAST_PLAYLIST_FILE_TYPE);
     }
 
+    public static boolean isTextFileType(int fileType){
+        return fileType == FILE_TYPE_TEXT;
+    }
+
     public static MediaFileType getFileType(String path) {
         int lastDot = path.lastIndexOf(".");
         if (lastDot < 0)
             return null;
         return sFileTypeMap.get(path.substring(lastDot + 1).toUpperCase());
     }
+
+
     //根据视频文件路径判断文件类型
     public static boolean isVideoFileType(String path) {  //自己增加
         MediaFileType type = getFileType(path);
@@ -160,9 +171,19 @@ public class FileType {
         MediaFileType type = getFileType(path);
         return null != type && isAudioFileType(type.fileType);
     }
+    //根据图像文件路径判断文件类型
+    public static boolean isImageFileType(String path) {  //自己增加
+        MediaFileType type = getFileType(path);
+        return null != type && isImageFileType(type.fileType);
+    }
     //根据mime类型查看文件类型
     public static int getFileTypeForMimeType(String mimeType) {
         Integer value = sMimeTypeMap.get(mimeType);
         return (value == null ? 0 : value);
+    }
+    //根据文本文档文件路径判断文件类型
+    public static boolean isTextFileType(String path) {  //自己增加
+        MediaFileType type = getFileType(path);
+        return null != type && isTextFileType(type.fileType);
     }
 }
