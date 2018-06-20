@@ -40,7 +40,7 @@ public class VideoActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private LinearLayoutManager linearLayoutManager;
     private MyFileAdapter adapter;
-    private List<MyFile> myFileList;
+    public static List<MyFile> myFileList;
     private Context mContext;
     private File file;
     private String fileName;
@@ -49,17 +49,20 @@ public class VideoActivity extends AppCompatActivity {
     private long total;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_first);
         adapter=new MyFileAdapter(myFileList);
-        initMyFile(Environment.getExternalStorageDirectory());
         mRecyclerView=(RecyclerView) findViewById(R.id.id_recyclerview3);
         linearLayoutManager=new LinearLayoutManager(VideoActivity.this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(adapter);
+        initMyFile(Environment.getExternalStorageDirectory());
     }
+
+
 
     private class MyFileAdapter extends RecyclerView.Adapter<MyFileAdapter.ViewHolder>{
         private List<MyFile> myFileList;
@@ -73,9 +76,12 @@ public class VideoActivity extends AppCompatActivity {
             if (mContext==null){
                 mContext=parent.getContext();
             }
-            View view= LayoutInflater.from(mContext).inflate(R.layout.activity_video_list,parent,false);
+            View view= LayoutInflater.from(mContext).inflate(R.layout.activity_video_list2,parent,false);
             ViewHolder holder=new ViewHolder(view);
             return holder;
+//            LayoutInflater layoutInflater=LayoutInflater.from(VideoActivity.this);
+//            View view=layoutInflater.inflate(R.layout.activity_video_list,parent,false);
+//            return new ViewHolder(view);
         }
 
         @Override
@@ -95,21 +101,22 @@ public class VideoActivity extends AppCompatActivity {
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder {
-            TextView myFileName;
-            ImageView myFileImage;
-            TextView myFileSize;
-            TextView myFilePower;
-            TextView myFileDate;
+            private TextView myFileName;
+            private ImageView myFileImage;
+            private TextView myFileSize;
+            private TextView myFilePower;
+            private TextView myFileDate;
             public ViewHolder(View itemView) {
                 super(itemView);
                 myFileName=itemView.findViewById(R.id.myFileImage);
                 myFileImage=itemView.findViewById(R.id.myFileImage);
-                myFileList=itemView.findViewById(R.id.fileSize);
+                myFileSize=itemView.findViewById(R.id.fileSize);
                 myFilePower=itemView.findViewById(R.id.filePower);
                 myFileDate=itemView.findViewById(R.id.fileDate);
             }
         }
     }
+
 
     private void initMyFile(File sourceFile) {
         myFileList.clear();
@@ -118,10 +125,12 @@ public class VideoActivity extends AppCompatActivity {
         for (File file:files){
             String fileName=file.getName();
             //默认是未知文件
-            int imageId=R.drawable.file_unknown;
+//            int imageId=R.drawable.file_unknown;
+            int imageId=R.drawable.ic_launcher_foreground;
 
             if (file.isDirectory()){
-                imageId=R.drawable.folder;
+//                imageId=R.drawable.folder;
+                imageId=R.drawable.ic_launcher_foreground;
             }else {
                 int dotIndex=fileName.lastIndexOf(".");
                 if (dotIndex>=0){
@@ -132,7 +141,8 @@ public class VideoActivity extends AppCompatActivity {
 //                            bitmap = ThumbnailUtils.createVideoThumbnail(file.getPath(), MediaStore.Images.Thumbnails.MICRO_KIND);
 //                            bitmap = ThumbnailUtils.extractThumbnail(bitmap,80,100,ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
 
-                            imageId=R.drawable.video;
+//                            imageId=R.drawable.video;
+                            imageId=R.drawable.ic_launcher_foreground;
 
                         }
                     }
@@ -169,11 +179,11 @@ public class VideoActivity extends AppCompatActivity {
             String fileDate="";
             fileDate=getModifiedTime_2(file);
             MyFile myFile=new MyFile(fileName,imagedId,fileSize,filePower,fileDate);
-            myFileList.add(myFile);
+            VideoActivity.myFileList.add(myFile);
         }
         adapter.notifyDataSetChanged();
     }
-
+    //获取文件大小
     private class SubDirectoriesAndSize{
         final public long size;
         final public List<File> subDirectories;
