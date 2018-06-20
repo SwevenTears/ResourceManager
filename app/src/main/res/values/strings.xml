@@ -1,9 +1,8 @@
 <resources>
-    <string name="app_name">ResourceManager</string>
+    <string name="app_name">资源管理器</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
+    <string name="nav_header_title">By 绰绰有余.</string>
+    <string name="nav_header_subtitle">Welcome use this app</string>
+    <string name="nav_header_desc">头像抑或logo设计</string>
 </resources>
