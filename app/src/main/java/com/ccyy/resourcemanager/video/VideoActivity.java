@@ -24,6 +24,7 @@ import android.widget.TextView;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
@@ -44,8 +45,6 @@ public class VideoActivity extends AppCompatActivity {
     private Context mContext;
     private File file;
     private String fileName;
-    private int imagedId;
-    private Iterable<? extends Future<SubDirectoriesAndSize>> partialResults;
     private long total;
 
 
@@ -54,12 +53,15 @@ public class VideoActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video_first);
+
+        myFileList=new ArrayList<>();
+        initMyFile(Environment.getExternalStorageDirectory());
         adapter=new MyFileAdapter(myFileList);
         mRecyclerView=(RecyclerView) findViewById(R.id.id_recyclerview3);
         linearLayoutManager=new LinearLayoutManager(VideoActivity.this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setAdapter(adapter);
-        initMyFile(Environment.getExternalStorageDirectory());
+
     }
 
 
@@ -108,7 +110,7 @@ public class VideoActivity extends AppCompatActivity {
             private TextView myFileDate;
             public ViewHolder(View itemView) {
                 super(itemView);
-                myFileName=itemView.findViewById(R.id.myFileImage);
+                myFileName=itemView.findViewById(R.id.myFileName);
                 myFileImage=itemView.findViewById(R.id.myFileImage);
                 myFileSize=itemView.findViewById(R.id.fileSize);
                 myFilePower=itemView.findViewById(R.id.filePower);
@@ -118,31 +120,45 @@ public class VideoActivity extends AppCompatActivity {
     }
 
 
-    private void initMyFile(File sourceFile) {
-        myFileList.clear();
+    public void initMyFile(File sourceFile) {
+//        myFileList.clear();
         List<File> files=new ArrayList<>();
-        Collections.addAll(files,sourceFile.listFiles());
+//        Collections.addAll(files,sourceFile.listFiles());
+        files.addAll(Arrays.asList(sourceFile.listFiles()));
         for (File file:files){
-            String fileName=file.getName();
+            String vedioName="<<<空>>>";
             //默认是未知文件
 //            int imageId=R.drawable.file_unknown;
-            int imageId=R.drawable.ic_launcher_foreground;
-
+//            int imageId=R.drawable.ic_launcher_foreground;
+            int imageId=0;
             if (file.isDirectory()){
-//                imageId=R.drawable.folder;
-                imageId=R.drawable.ic_launcher_foreground;
+                initMyFile(file);
             }else {
+                String fileName=file.getName();
                 int dotIndex=fileName.lastIndexOf(".");
                 if (dotIndex>=0){
                     String end=fileName.substring(dotIndex,fileName.length()).toLowerCase();
                     if(!Objects.equals(end,"")){
-                        if (Objects.equals(end,".mp4")||Objects.equals(end,".3gp")||Objects.equals(end,".wmv")||Objects.equals(end,".ts")||Objects.equals(end,".rmvb")||Objects.equals(end,".mov")||Objects.equals(end,".m4v")||Objects.equals(end,".avi")||Objects.equals(end,".m3u8")||Objects.equals(end,".3ggp")||Objects.equals(end,".3ggp2")||Objects.equals(end,".mkv")||Objects.equals(end,".flv")||Objects.equals(end,".divx")||Objects.equals(end,".f4v")||Objects.equals(end,".rm")||Objects.equals(end,".asf")||Objects.equals(end,".ram")||Objects.equals(end,".mpg")||Objects.equals(end,".v8")||Objects.equals(end,".swf")||Objects.equals(end,".m2v")||Objects.equals(end,".asx")||Objects.equals(end,".ra")||Objects.equals(end,".ndivx")||Objects.equals(end,".xvid")){
+                        if (Objects.equals(end,".mp4")||Objects.equals(end,".3gp")||Objects.equals(end,".wmv")||
+                                Objects.equals(end,".ts")||Objects.equals(end,".rmvb")||
+                                Objects.equals(end,".mov")||Objects.equals(end,".m4v")||
+                                Objects.equals(end,".avi")||Objects.equals(end,".m3u8")||
+                                Objects.equals(end,".3ggp")||Objects.equals(end,".3ggp2")||
+                                Objects.equals(end,".mkv")||Objects.equals(end,".flv")||
+                                Objects.equals(end,".divx")||Objects.equals(end,".f4v")||
+                                Objects.equals(end,".rm")||Objects.equals(end,".asf")||
+                                Objects.equals(end,".ram")||Objects.equals(end,".mpg")||
+                                Objects.equals(end,".v8")||Objects.equals(end,".swf")||
+                                Objects.equals(end,".m2v")||Objects.equals(end,".asx")||
+                                Objects.equals(end,".ra")||Objects.equals(end,".ndivx")||
+                                Objects.equals(end,".xvid")){
 //                            Bitmap bitmap;
 //                            bitmap = ThumbnailUtils.createVideoThumbnail(file.getPath(), MediaStore.Images.Thumbnails.MICRO_KIND);
 //                            bitmap = ThumbnailUtils.extractThumbnail(bitmap,80,100,ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
 
-//                            imageId=R.drawable.video;
-                            imageId=R.drawable.ic_launcher_foreground;
+                            imageId=R.drawable.video;
+//                            imageId=R.drawable.ic_launcher_foreground;
+                            vedioName=file.getName();
 
                         }
                     }
@@ -151,13 +167,7 @@ public class VideoActivity extends AppCompatActivity {
             String fileSize="";
             long size=0;
             //开始判断文件大小
-            if (file.isDirectory()){
-                try{
-                    size=getTotalSizeofFilesInDir(file);
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-            }else {
+            if (!file.isDirectory()){
                 size=file.length();
             }
             //判断大小是用什么单位，K/M/G
@@ -165,8 +175,10 @@ public class VideoActivity extends AppCompatActivity {
                 fileSize=size/1024/1024/1024+"G";
             }else if (size/1024/1024>0){
                 fileSize=size/1024/1024+"M";
-            }else {
+            }else if(size/1024>0){
                 fileSize=size/1024+"K";
+            }else{
+                fileSize=size+"B";
             }
 
             String filePower="";
@@ -178,69 +190,13 @@ public class VideoActivity extends AppCompatActivity {
             filePower=builder.toString();
             String fileDate="";
             fileDate=getModifiedTime_2(file);
-            MyFile myFile=new MyFile(fileName,imagedId,fileSize,filePower,fileDate);
-            VideoActivity.myFileList.add(myFile);
-        }
-        adapter.notifyDataSetChanged();
-    }
-    //获取文件大小
-    private class SubDirectoriesAndSize{
-        final public long size;
-        final public List<File> subDirectories;
-
-
-        public SubDirectoriesAndSize(final long totalSize,final List<File> theSubDirs) {
-            size = totalSize;
-            subDirectories =Collections.unmodifiableList(theSubDirs);
-        }
-    }
-
-    private SubDirectoriesAndSize getTotalAndSubDirs(final File file){
-        long total=0;
-        final List<File> subDirectories=new ArrayList<File>();
-        if (file.isDirectory()){
-            final File[] children=file.listFiles();
-            if (children!=null){
-                for (final File child:children){
-                    if (child.isFile()){
-                        total+=child.length();
-                    }else{
-                        subDirectories.add(child);
-                    }
-                }
+            if(!vedioName.equals("<<<空>>>")) {
+                MyFile myFile=new MyFile(vedioName,imageId,fileSize,filePower,fileDate);
+                myFileList.add(myFile);
             }
-        }
-        return new SubDirectoriesAndSize(total,subDirectories);
-    }
 
-
-    private long getTotalSizeofFilesInDir(final File file) throws InterruptedException,ExecutionException,TimeoutException {
-        final ExecutorService service= Executors.newFixedThreadPool(100);
-        try{
-            long total=0;
-            final List<File> directories=new ArrayList<File>();
-            directories.add(file);
-            while (!directories.isEmpty()){
-                final List<Future<SubDirectoriesAndSize>> partialResults=new ArrayList<Future<SubDirectoriesAndSize>>();
-                for (final File directory:directories){
-                    partialResults.add(service.submit(new Callable<SubDirectoriesAndSize>() {
-                        @Override
-                        public SubDirectoriesAndSize call() {
-                            return getTotalAndSubDirs(directory);
-                        }
-                    }));
-                }
-                directories.clear();
-                for (final Future<SubDirectoriesAndSize> partialResultFuture:partialResults){
-                    final SubDirectoriesAndSize subDirectoriesAndSize=partialResultFuture.get(100, TimeUnit.SECONDS);
-                    directories.addAll(subDirectoriesAndSize.subDirectories);
-                    total+=subDirectoriesAndSize.size;
-                }
-            }
-            return total;
-        }finally {
-            service.shutdown();
         }
+//        adapter.notifyDataSetChanged();
     }
 
     public static String getModifiedTime_2(File f) {
@@ -251,7 +207,6 @@ public class VideoActivity extends AppCompatActivity {
         return formatter.format(cal.getTime());
 
     }
-
 
 
 

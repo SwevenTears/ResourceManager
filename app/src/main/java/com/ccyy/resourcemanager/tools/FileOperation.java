@@ -30,28 +30,30 @@ public class FileOperation {
 
 
     /**
-     * @param list 需要进行排序的数据
+     * @param list   需要进行排序的数据
      * @param isRoot 第一个数据是否需要进行排序（针对有返回上一级的子目录）
      * @return 经过排序后的 {@link ArrayList < FileData >} 数据
      */
-    public static ArrayList<FileData> order(ArrayList<FileData> list,boolean isRoot){
-        ArrayList<FileData> new_list=new ArrayList<>();
-        String names[]=new String[list.size()];
-        int n=0;
-        if(isRoot) {
+    public static ArrayList<FileData> order(ArrayList<FileData> list, boolean isRoot) {
+        ArrayList<FileData> new_list = new ArrayList<>();
+        String names[] = new String[list.size()];
+        int n = 0;
+        if (isRoot) {
             n = 1;
             new_list.add(list.get(0));
-            names[0]="///";
+            names[0] = "///";
         }
-        for (int i=n;i<list.size();i++){
-            names[i]=list.get(i).getName();
+        for (int i = n; i < list.size(); i++) {
+            names[i] = list.get(i).getName();
         }
         Comparator china = Collator.getInstance(Locale.CHINA);
-        Arrays.sort(names,china);
-        for(int i=0;i<names.length;i++){
-            for(int j=0;j<names.length;j++){
-                if(names[i].equals(list.get(j).getName())){
-                    new_list.add(new FileData(names[i],list.get(j).getPath(),list.get(j).getFileIcon()));
+        Arrays.sort(names, china);
+        for (int i = 0; i < names.length; i++) {
+            for (int j = 0; j < names.length; j++) {
+                if (names[i].equals(list.get(j).getName())) {
+                    new_list.add(new FileData(names[i], list.get(j).getPath(), list.get(j).getFileIcon(),
+                            list.get(j).getLast_date(), list.get(j).getSize(),
+                            list.get(j).getFolder_count(), list.get(j).getFile_count(), list.get(j).isCheck()));
                 }
             }
         }
@@ -62,13 +64,13 @@ public class FileOperation {
      * @param parent_folder_path 需要查询文件数量的文件夹名称
      * @return 当前文件夹的所有文件数量、文件夹数量和文件数量
      */
-    public static int[] get_FolderCount_FileCount(String parent_folder_path){
-        int count[]={0,0,0};
-        File parent_folder=new File(parent_folder_path);
-        File[] parents=parent_folder.listFiles();
-        for(int i=0;i<parents.length;i++){
-            File child=parents[0];
-            if(child.isDirectory())
+    public static int[] get_FolderCount_FileCount(String parent_folder_path) {
+        int count[] = {0, 0, 0};
+        File parent_folder = new File(parent_folder_path);
+        File[] parents = parent_folder.listFiles();
+        for (int i = 0; i < parents.length; i++) {
+            File child = parents[0];
+            if (child.isDirectory())
                 count[1]++;
             else
                 count[2]++;
@@ -79,17 +81,17 @@ public class FileOperation {
     }
 
     /**
-     * @param child_folder_name 需要查找的子目录文件夹名称
+     * @param child_folder_name   需要查找的子目录文件夹名称
      * @param parent_folder_files 父目录文件夹的文件集合
      * @return position child_folder_name在父文件夹的位置
      */
-    public static int find_folder_position(String child_folder_name,ArrayList<String> parent_folder_files){
-        int position=0;
+    public static int find_folder_position(String child_folder_name, ArrayList<String> parent_folder_files) {
+        int position = 0;
 
-        for(int i=0;i<parent_folder_files.size();i++){
-            String child=parent_folder_files.get(i);
-            if(child_folder_name.equals(child)){
-                position=i;
+        for (int i = 0; i < parent_folder_files.size(); i++) {
+            String child = parent_folder_files.get(i);
+            if (child_folder_name.equals(child)) {
+                position = i;
                 break;
             }
         }
@@ -99,8 +101,8 @@ public class FileOperation {
     /**
      * @return 获取手机内置储存卡位置
      */
-    public static String getSDPath(){
-        File sdDir =null;
+    public static String getSDPath() {
+        File sdDir = null;
         boolean sdCardExist = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);//判断sd卡是否存在
         if (sdCardExist) {
             sdDir = Environment.getExternalStorageDirectory();//获取根目录
@@ -110,13 +112,13 @@ public class FileOperation {
     }
 
     /**
-     * @param name  图片的完整地址
-     * @param bm bitmap图片
-     * @param newWidth 需要设置的宽度
+     * @param name      图片的完整地址
+     * @param bm        bitmap图片
+     * @param newWidth  需要设置的宽度
      * @param newHeight 需要设置的高度
      * @return 新的图片
      */
-    public static Bitmap setImgSize(String name,Bitmap bm, int newWidth , int newHeight){
+    public static Bitmap setImgSize(String name, Bitmap bm, int newWidth, int newHeight) {
         // 获得图片的宽高.
         int width = bm.getWidth();
         int height = bm.getHeight();
@@ -128,13 +130,13 @@ public class FileOperation {
         matrix.postScale(scaleWidth, scaleHeight);
         // 得到新的图片.
         Bitmap newbm = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, true);
-        OutputStream out= null;
+        OutputStream out = null;
         try {
-            out = new FileOutputStream(new File(ResourceManager.App_Temp_Image_Path+"/"+name));
+            out = new FileOutputStream(new File(ResourceManager.App_Temp_Image_Path + "/" + name));
         } catch (FileNotFoundException e) {
-            Log.e("压缩图片进程","失败，出错");
+            Log.e("压缩图片进程", "失败，出错");
         }
-        newbm.compress(Bitmap.CompressFormat.PNG,20,out);
+        newbm.compress(Bitmap.CompressFormat.PNG, 20, out);
         return newbm;
     }
 

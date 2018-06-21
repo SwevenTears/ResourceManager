@@ -28,9 +28,9 @@ public class ResourceManager {
      * @param path 文件目录
      *             创建 APP的根目录
      */
-    public static void createAppPath(String path){
-        File file=new File(path);
-        if(!file.exists())
+    public static void createAppPath(String path) {
+        File file = new File(path);
+        if (!file.exists())
             file.mkdirs();
     }
 }

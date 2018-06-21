@@ -40,6 +40,8 @@ import com.ccyy.resourcemanager.video.VideoActivity;
 import java.io.File;
 import java.util.ArrayList;
 
+import static com.ccyy.resourcemanager.main.FileTools.getFileList;
+
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -47,7 +49,7 @@ public class MainActivity extends AppCompatActivity
     private LinearLayout show_device;
     public RecyclerView file_recycler;
 
-    private String rootPath=FileOperation.getSDPath();
+    private String rootPath = FileOperation.getSDPath();
     private String childFolder_path;
     private String childFolder_name;
 
@@ -58,7 +60,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer =  findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -71,6 +73,8 @@ public class MainActivity extends AppCompatActivity
 
         setButton();
 
+        TextActivity.loadTextList(MainActivity.this,rootPath);
+
     }
 
     private void setButton() {
@@ -80,9 +84,9 @@ public class MainActivity extends AppCompatActivity
         file_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                T.tips(MainActivity.this,"分享");
+                T.tips(MainActivity.this, "分享");
                 //TODO 一个测试例子
-                Intent intent= FileTools.shareFile("/sdcard/cb72f994370f9e817eaa495aaf428644.png");
+                Intent intent = FileTools.shareFile("/sdcard/cb72f994370f9e817eaa495aaf428644.png");
                 startActivity(intent);
             }
         });
@@ -113,8 +117,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.action_add_folder) {
             return true;
-        }
-        else if(id == R.id.action_add_file) {
+        } else if (id == R.id.action_add_file) {
             return true;
         }
 
@@ -129,25 +132,20 @@ public class MainActivity extends AppCompatActivity
 
         //todo 事件触发
         if (id == R.id.nav_photo) {
-            Intent intent=new Intent(this, PhotoActivity.class);
+            Intent intent = new Intent(this, PhotoActivity.class);
             startActivity(intent);
-        }
-        else if (id == R.id.nav_music) {
-            Intent intent=new Intent(this, MusicActivity.class);
+        } else if (id == R.id.nav_music) {
+            Intent intent = new Intent(this, MusicActivity.class);
             startActivity(intent);
-        }
-        else if (id == R.id.nav_video) {
-            Intent intent=new Intent(this, VideoActivity.class);
+        } else if (id == R.id.nav_video) {
+            Intent intent = new Intent(this, VideoActivity.class);
             startActivity(intent);
-        }
-        else if (id == R.id.nav_text) {
-            Intent intent=new Intent(this, TextActivity.class);
+        } else if (id == R.id.nav_text) {
+            Intent intent = new Intent(this, TextActivity.class);
             startActivity(intent);
-        }
-        else if (id == R.id.nav_share) {
+        } else if (id == R.id.nav_share) {
 
-        }
-        else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_send) {
 
         }
 
@@ -156,94 +154,82 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public void initFile(){
+    public void initFile() {
 
         //初始化APP的临时文件储存位置、APP配置文件位置
         ResourceManager.createAppPath(ResourceManager.App_Path);
         ResourceManager.createAppPath(ResourceManager.App_Temp_Image_Path);
         ResourceManager.createAppPath(ResourceManager.App_Temp_Video_Image_Path);
 
-        childFolder_path=rootPath;
+        childFolder_path = rootPath;
 
-        file_recycler=findViewById(R.id.file_list);
-        linearLayoutManager=new LinearLayoutManager(this);
+        file_recycler = findViewById(R.id.file_list);
+        linearLayoutManager = new LinearLayoutManager(this);
 
-        getFileDir(rootPath,false);
+        getFileDir(rootPath, false);
     }
 
     /**
      * 取得文件架构的method
-     * @param filePath 文件当前目录
-     * @param isParent 当前操作是否为点击“返回上一级”
+     *
+     * @param parent_file_path 文件当前目录
+     * @param isParent         当前操作是否为点击“返回上一级”
      */
-    public void getFileDir(String filePath, boolean isParent) {
+    public void getFileDir(String parent_file_path, boolean isParent) {
 
-        int previous_position=0;
+        File present_file = new File(childFolder_path);
 
-        ArrayList<FileData> extra_Information=new ArrayList<>();
+        new FileTools(MainActivity.this, rootPath);
 
-        Log.i("当前目录",filePath);
-        Log.i("根目录：",rootPath);
+        ArrayList<FileData> allFile = getFileList(parent_file_path);
 
-        new FileTools(MainActivity.this,rootPath);
-
-        ArrayList<FileData> allFile=FileTools.getFileList(filePath);
-
-        if(isParent){
-            ArrayList<String> folder_names = new ArrayList<>();
-
-            for(int i=0;i<allFile.size();i++)
-                folder_names.add(allFile.get(i).getName());
-            childFolder_name = new File(childFolder_path).getName();
-            previous_position=FileOperation.find_folder_position(childFolder_name,folder_names);
-        }
-
-        loadData(allFile,extra_Information,previous_position,isParent);
+        loadData(allFile, present_file, isParent);
 
     }
 
 
     /**
-     * @param data {@link ArrayList<FileData>} 进行渲染item
-     * @param extra_Information 额外的文件信息
-     * @param previous_position 当前文件目录在上一级文件夹目录的位置
-     * @param isParent 当前操作是否为点击“返回上一级”
+     * @param data              {@link ArrayList<FileData>} 进行渲染item
+     * @param present_file      当前文件，即需要查询的文件在父目录中位置的文件
+     * @param isParent          当前操作是否为点击“返回上一级”
      */
-    private void loadData
-    (@NonNull ArrayList<FileData> data,ArrayList<FileData> extra_Information,
-     int previous_position,boolean isParent){
+    private void loadData(@NonNull ArrayList<FileData> data, File present_file, boolean isParent) {
 
-        show_device=findViewById(R.id.file_device);
+        show_device = findViewById(R.id.file_device);
         show_device.removeAllViews();
-        new DeviceShow(MainActivity.this,show_device,rootPath,childFolder_path,isParent);
+        new DeviceShow(MainActivity.this, show_device, rootPath, childFolder_path, isParent);
 
-        if(isParent){
+        if (isParent) {
+            int position = FileTools.getPositionInParentFolder(data, present_file);
             // 通过 LayoutManager 的 srcollToPositionWithOffset 方法进行定位
-            linearLayoutManager.scrollToPositionWithOffset(previous_position, 0);
+            linearLayoutManager.scrollToPositionWithOffset(position, 0);
         }
 
         file_recycler.setLayoutManager(linearLayoutManager);
 
-        FileAdapter fileAdapter=new FileAdapter(MainActivity.this,data,extra_Information);
+        FileAdapter fileAdapter = new FileAdapter(MainActivity.this, data);
         file_recycler.setAdapter(fileAdapter);
-        file_recycler.addItemDecoration(new DividerItemDecoration(this,DividerItemDecoration.VERTICAL));
+        file_recycler.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
         fileAdapter.setOnClickItem(new FileAdapter.onClickItem() {
             @Override
-            public void onClick(String name, String path,int previous_position) {
-                File temp=new File(path);
-                String parentPath=temp.getParent();
-                childFolder_path=path;
+            public void onClick(ArrayList<FileData> fileData, int position) {
+                String name=fileData.get(position).getName();
+                String path=fileData.get(position).getPath();
 
-                if(name.equals("previous")){
-                    Log.i("当前点击的文件或文件夹名称",temp.getName());
-                    getFileDir(parentPath,true);
-                }
-                else{
-                    Log.i("当前点击的文件或文件夹名称",name);
-                    if(temp.isDirectory())
+                File file = new File(path);
+                String parentPath = file.getParent();
+                childFolder_path = path;
+
+                if (name.equals("<<previous>>")) {
+                    getFileDir(parentPath, true);
+                } else {
+                    if (file.isDirectory()) {
                         getFileDir(path, false);
-                    T.tips(MainActivity.this,name+"\n"+path);
+                    }
+                    else {
+                        FileTools.openFile(file,MainActivity.this);
+                    }
                 }
 
             }
@@ -251,15 +237,13 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if(!childFolder_path.equals(rootPath)){
-                getFileDir(new File(childFolder_path).getParent(),true);
-                childFolder_path=new File(childFolder_path).getParentFile().getPath();
-            }
-            else{
+            if (!childFolder_path.equals(rootPath)) {
+                getFileDir(new File(childFolder_path).getParent(), true);
+                childFolder_path = new File(childFolder_path).getParentFile().getPath();
+            } else {
                 ExitSure.exitApp(this);
             }
         }

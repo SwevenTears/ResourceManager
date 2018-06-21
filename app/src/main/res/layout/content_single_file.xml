@@ -32,6 +32,12 @@
         android:layout_height="wrap_content"
         android:gravity="right">
 
+        <TextView
+            android:id="@+id/file_sign"
+            android:text=">"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <CheckBox
             android:id="@+id/file_check"
             android:layout_width="wrap_content"

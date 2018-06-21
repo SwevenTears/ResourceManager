@@ -25,15 +25,23 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".music.MusicActivity"
-            android:label="音乐播放器"/>
-        <activity android:name=".photo.PhotoActivity"
-            android:label="图片浏览器"/>
-        <activity android:name=".text.TextActivity"
-            android:label="文本编辑器"/>
-        <activity android:name=".video.VideoActivity"
+        <activity
+            android:name=".music.MusicActivity"
+            android:label="音乐播放器" />
+        <activity
+            android:name=".photo.PhotoActivity"
+            android:label="图片浏览器" />
+        <activity
+            android:name=".text.TextActivity"
+            android:label="文本编辑器" />
+        <activity
+            android:name=".video.VideoActivity"
             android:label="视频播放器" />
-
+        <activity
+            android:name=".text.EditTextActivity"
+            android:label="@string/title_activity_edit_text"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:windowSoftInputMode="stateHidden"> </activity>
     </application>
 
 </manifest>
