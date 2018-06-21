@@ -73,8 +73,6 @@ public class MainActivity extends AppCompatActivity
 
         setButton();
 
-        TextActivity.loadTextList(MainActivity.this,rootPath);
-
     }
 
     private void setButton() {
