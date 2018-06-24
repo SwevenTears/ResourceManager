@@ -16,13 +16,13 @@
             android:id="@+id/nav_video"
             android:icon="@drawable/video"
             android:title="video" />
-        <item
-            android:id="@+id/nav_text"
-            android:icon="@drawable/text"
-            android:title="text" />
+        <!--<item-->
+            <!--android:id="@+id/nav_text"-->
+            <!--android:icon="@drawable/text"-->
+            <!--android:title="text" />-->
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="更多">
         <menu>
             <item
                 android:id="@+id/nav_share"

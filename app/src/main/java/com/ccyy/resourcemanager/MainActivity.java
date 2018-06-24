@@ -25,7 +25,6 @@ import com.ccyy.resourcemanager.main.FileData;
 import com.ccyy.resourcemanager.main.FileTools;
 import com.ccyy.resourcemanager.music.MusicActivity;
 import com.ccyy.resourcemanager.photo.PhotoActivity;
-import com.ccyy.resourcemanager.text.TextActivity;
 import com.ccyy.resourcemanager.tools.ExitSure;
 import com.ccyy.resourcemanager.tools.FileOperation;
 import com.ccyy.resourcemanager.tools.T;
@@ -78,7 +77,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v) {
                 T.tips(MainActivity.this, "分享");
                 //TODO 一个测试例子
-                Intent intent = FileTools.shareFile("/sdcard/cb72f994370f9e817eaa495aaf428644.png");
+                Intent intent = FileTools.shareSingleFile("/sdcard/cb72f994370f9e817eaa495aaf428644.png");
                 startActivity(intent);
             }
         });
@@ -132,11 +131,8 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_video) {
             Intent intent = new Intent(this, VideoActivity.class);
             startActivity(intent);
-        } else if (id == R.id.nav_text) {
-            Intent intent = new Intent(this, TextActivity.class);
-            startActivity(intent);
         } else if (id == R.id.nav_share) {
-
+            // todo 将本应用分享出去
         } else if (id == R.id.nav_send) {
 
         }
@@ -157,6 +153,10 @@ public class MainActivity extends AppCompatActivity
 
         file_recycler = findViewById(R.id.file_list);
         linearLayoutManager = new LinearLayoutManager(this);
+        file_recycler.setLayoutManager(linearLayoutManager);
+        file_recycler.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+
+        show_device = findViewById(R.id.file_device);
 
         getFileDir(rootPath, false);
     }
@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity
      */
     private void loadData(@NonNull ArrayList<FileData> data, File present_file, boolean isParent) {
 
-        show_device = findViewById(R.id.file_device);
+
         show_device.removeAllViews();
         new DeviceShow(MainActivity.this, show_device, rootPath, childFolder_path, isParent);
 
@@ -197,12 +197,17 @@ public class MainActivity extends AppCompatActivity
             linearLayoutManager.scrollToPositionWithOffset(position, 0);
         }
 
-        file_recycler.setLayoutManager(linearLayoutManager);
-
         FileAdapter fileAdapter = new FileAdapter(MainActivity.this, data);
         file_recycler.setAdapter(fileAdapter);
-        file_recycler.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
+        addListener(fileAdapter);
+    }
+
+    /**
+     * 为适配器添加监听事件
+     * @param fileAdapter 适配器
+     */
+    private void addListener(FileAdapter fileAdapter) {
         fileAdapter.setOnClickItem(new FileAdapter.onClickItem() {
             @Override
             public void onClick(ArrayList<FileData> fileData, int position) {
@@ -224,6 +229,13 @@ public class MainActivity extends AppCompatActivity
                     }
                 }
 
+            }
+        });
+        fileAdapter.setOnLongClickItem(new FileAdapter.onLongClickItem() {
+            @Override
+            public void onClick(ArrayList<FileData> fileData, int position) {
+                String name=fileData.get(position).getName();
+                T.tips(MainActivity.this,name);
             }
         });
     }

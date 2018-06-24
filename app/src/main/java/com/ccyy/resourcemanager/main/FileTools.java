@@ -205,7 +205,7 @@ public class FileTools {
      * @param path 文件地址
      * @return intent 将文件分享到其他应用
      */
-    public static Intent shareFile(String path) {
+    public static Intent shareSingleFile(String path) {
         Intent share = new Intent(Intent.ACTION_SEND);
         share.setType("*/*");
         share.putExtra(Intent.EXTRA_SUBJECT, "分享");
@@ -275,7 +275,7 @@ public class FileTools {
 
             // 打开未知文件
             else {
-                T.error(context,"未知文件，没有相关的应用能打开");
+                T.error(context,"未知文件，无法打开");
             }
         } catch (Exception e) {
             Intent intent=new Intent(Intent.ACTION_GET_CONTENT);
