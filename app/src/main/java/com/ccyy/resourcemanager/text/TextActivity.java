@@ -7,10 +7,13 @@ import com.ccyy.resourcemanager.tools.FileType;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -27,7 +30,7 @@ public class TextActivity extends AppCompatActivity {
     public RecyclerView text_recycler;
     public static TextView text_tips;
 
-    private String rootPath = FileOperation.getSDPath();
+    private String rootPath = FileOperation.getMobilePath();
 
     private TextAdapter adapter;
 
@@ -53,7 +56,7 @@ public class TextActivity extends AppCompatActivity {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         text_recycler.setLayoutManager(layoutManager);
 
-//        getText(rootPath);
+//        addMore(rootPath);
 
         loadTextList(TextActivity.this,rootPath);
 
@@ -80,13 +83,24 @@ public class TextActivity extends AppCompatActivity {
         text_recycler.addItemDecoration(new DividerItemDecoration(this, 1));
     }
 
+    private void addMore(String rootPath){
+        File rootFile = new File(rootPath);
+        if(rootPath.equals(this.rootPath))
+            getText(rootPath);
+        for (File file : rootFile.listFiles()){
+            if(file.isDirectory()){
+                getText(file.getPath());
+                addMore(file.getPath());
+            }
+        }
+    }
+
     private void getText(String rootPath) {
         File rootFile = new File(rootPath);
 
+        text_list_data.clear();
         for (File file : rootFile.listFiles()) {
-            if (file.isDirectory()) {
-                getText(file.getPath());
-            } else {
+            if (!file.isDirectory()){
                 String file_path = file.getPath();
                 String file_name = file.getName();
                 Bitmap file_icon = BitmapFactory.decodeResource(getResources(), R.drawable.text);
@@ -98,6 +112,47 @@ public class TextActivity extends AppCompatActivity {
                     FileData data = new FileData(file_name, file_path, file_icon, file_last_time, file_size, NO_FOLDER, NO_FILE, false);
                     text_list_data.add(data);
                 }
+            }
+        }
+        if(!rootPath.equals(this.rootPath)){
+            adapter.addData(text_list_data);
+        }
+        else{
+            loadItem();
+        }
+
+    }
+
+    private void getText2(){
+        final Uri uri= MediaStore.Files.getContentUri(FileOperation.getMobilePath());
+
+        String[] projection={
+                MediaStore.Files.FileColumns.DATA,//路径
+                MediaStore.Files.FileColumns.DATE_MODIFIED,//最后修改时间
+                MediaStore.Files.FileColumns.DISPLAY_NAME, // 文件名称
+                MediaStore.Files.FileColumns.SIZE,//文件大小
+        };
+
+        String selection=MediaStore.Files.FileColumns.MIME_TYPE+"=?";
+        Cursor mCursor =getContentResolver()
+                .query(uri,projection,null,
+                        null, null);
+        if(mCursor!=null){
+
+            while(mCursor.moveToNext()){
+
+                //获取文件路径
+                String path = mCursor.getString(mCursor
+                        .getColumnIndex(MediaStore.Files.FileColumns.DATA));
+                //获取修改日期
+                long date = mCursor.getLong(mCursor
+                        .getColumnIndex(MediaStore.Files.FileColumns.DATE_MODIFIED));
+                //获取文件大小
+                long size = mCursor.getLong(mCursor.getColumnIndex(MediaStore.Files.FileColumns.SIZE));
+                //获取文件名称
+                String display_name = mCursor.getString(mCursor.getColumnIndex(MediaStore.Files.FileColumns.DISPLAY_NAME));
+
+                //do something
             }
         }
     }

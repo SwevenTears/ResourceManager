@@ -14,6 +14,7 @@ public class ExitSure {
 
     /**
      * 退出确认
+     * @param context
      */
     public static void exitApp(Context context) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -27,12 +28,7 @@ public class ExitSure {
 
             }
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface arg0, int arg1) {
-
-            }
-        });
+        builder.setNegativeButton("取消", null);
         builder.show();
     }
 

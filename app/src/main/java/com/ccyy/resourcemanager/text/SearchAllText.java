@@ -9,16 +9,20 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.ccyy.resourcemanager.R;
 import com.ccyy.resourcemanager.main.FileData;
+import com.ccyy.resourcemanager.tools.FileOperation;
 import com.ccyy.resourcemanager.tools.FileType;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Sweven on 2018/6/21.
@@ -76,33 +80,12 @@ public class SearchAllText extends AsyncTask<String,String,Void> {
                     String file_name = file.getName();
                     long file_size = file.length();
                     long file_last_time = file.lastModified();
-                    FileData data=new FileData(file_name,file_path,file_icon,file_last_time,file_size,NO_FOLDER,NO_FILE,false);
+                    FileData data=new FileData(file_name,file_path,file_last_time,file_size,false);
                     text_list.add(data);
                 }
             }
         }
     }
 
-    private void getText2(){
-        //图片类型的Uri路径
-        final Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-        //按照图片修改时间，筛选出jpeg和png类型的图片
-        Cursor mCursor =context.getContentResolver()
-                .query(uri,null,MediaStore.Images.ImageColumns.MIME_TYPE + "=? or "+ MediaStore.Images.ImageColumns.MIME_TYPE + "=?",
-                        new String[]{"image/jpeg", "image/png"}, MediaStore.Images.Media.DATE_MODIFIED);
-        if(mCursor!=null){
 
-            while(mCursor.moveToNext()){
-
-                //获取图片路径
-                String path = mCursor.getString(mCursor
-                        .getColumnIndex(MediaStore.Images.ImageColumns.DATA));
-                //获取修改日期
-                long date = mCursor.getLong(mCursor
-                        .getColumnIndex(MediaStore.Images.ImageColumns.DATE_MODIFIED));
-
-                //do something
-            }
-        }
-    }
 }

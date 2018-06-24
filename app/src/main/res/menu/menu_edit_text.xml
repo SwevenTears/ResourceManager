@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <group android:id="@+id/must_menu">
+
+        <item
+            android:id="@+id/selectAll"
+            android:title="全选" />
+        <item
+            android:id="@+id/save_file"
+            android:title="保存" />
+        <item
+            android:id="@+id/save_as"
+            android:title="另存为" />
+        <item
+            android:id="@+id/exit"
+            android:title="退出编辑" />
+
+    </group>
+</menu>

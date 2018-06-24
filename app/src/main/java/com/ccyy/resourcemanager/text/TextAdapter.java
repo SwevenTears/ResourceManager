@@ -3,6 +3,7 @@ package com.ccyy.resourcemanager.text;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -29,10 +30,14 @@ public class TextAdapter extends RecyclerView.Adapter<TextAdapter.TextViewHolder
     public ArrayList<FileData> textList;
     public Context context;
 
+    private Bitmap file_icon;
+
     public TextAdapter(Context context,ArrayList<FileData> data) {
         inflater=LayoutInflater.from(context);
         this.textList=data;
         this.context=context;
+
+        file_icon= BitmapFactory.decodeResource(context.getResources(),R.drawable.text);
     }
 
     @NonNull
@@ -45,14 +50,17 @@ public class TextAdapter extends RecyclerView.Adapter<TextAdapter.TextViewHolder
     @Override
     public void onBindViewHolder(@NonNull TextAdapter.TextViewHolder holder, int position) {
         String name = textList.get(position).getName();
-        String path = textList.get(position).getPath();
-        Bitmap bitmap = textList.get(position).getFileIcon();
         long size = textList.get(position).getSize();
 
         holder.file_name.setText(name);
-        holder.file_img.setImageBitmap(bitmap);
+        holder.file_img.setImageBitmap(file_icon);
 
         holder.file_sign.setText(FileTools.getFileSize(size));
+    }
+
+    public void addData(ArrayList<FileData> data) {
+        textList.addAll(data);
+        notifyDataSetChanged();
     }
 
     @Override

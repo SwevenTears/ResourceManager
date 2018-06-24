@@ -20,6 +20,23 @@ public class FileData {
     public boolean isCheck;
 
     /**
+     * 适用于TXT文件的操作
+     * @param name 文件名
+     * @param path 文件地址
+     * @param last_date 最后修改时间
+     * @param size 文件大小
+     * @param isCheck 是否被选中
+     */
+    public FileData(String name, String path, long last_date, long size, boolean isCheck) {
+        this.name = name;
+        this.path = path;
+        this.last_date = last_date;
+        this.size = size;
+        this.isCheck = isCheck;
+    }
+
+    /**
+     * 该构造方法适用于文件浏览
      * @param name         文件名
      * @param path         文件地址
      * @param fileIcon     文件对应图标

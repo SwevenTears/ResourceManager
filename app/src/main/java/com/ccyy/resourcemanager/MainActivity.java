@@ -1,11 +1,7 @@
 package com.ccyy.resourcemanager;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.media.ThumbnailUtils;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,7 +12,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,7 +28,6 @@ import com.ccyy.resourcemanager.photo.PhotoActivity;
 import com.ccyy.resourcemanager.text.TextActivity;
 import com.ccyy.resourcemanager.tools.ExitSure;
 import com.ccyy.resourcemanager.tools.FileOperation;
-import com.ccyy.resourcemanager.tools.FileType;
 import com.ccyy.resourcemanager.tools.T;
 import com.ccyy.resourcemanager.video.VideoActivity;
 
@@ -49,7 +43,7 @@ public class MainActivity extends AppCompatActivity
     private LinearLayout show_device;
     public RecyclerView file_recycler;
 
-    private String rootPath = FileOperation.getSDPath();
+    private String rootPath = FileOperation.getMobilePath();
     private String childFolder_path;
     private String childFolder_name;
 

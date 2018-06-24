@@ -101,11 +101,24 @@ public class FileOperation {
     /**
      * @return 获取手机内置储存卡位置
      */
+    public static String getMobilePath() {
+        File sdDir = null;
+        boolean sdCardExist = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);//判断sd卡是否存在
+        if (sdCardExist) {
+            sdDir = Environment.getExternalStorageDirectory();//获取手机根目录
+        }
+        assert sdDir != null;
+        return sdDir.toString();
+    }
+
+    /**
+     * @return 获取SD卡位置
+     */
     public static String getSDPath() {
         File sdDir = null;
         boolean sdCardExist = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);//判断sd卡是否存在
         if (sdCardExist) {
-            sdDir = Environment.getExternalStorageDirectory();//获取根目录
+            sdDir = Environment.getExternalStorageDirectory();//获取SD卡根目录
         }
         assert sdDir != null;
         return sdDir.toString();
