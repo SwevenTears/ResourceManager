@@ -89,9 +89,12 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
         long file_size = fileData.get(position).getSize();
         File file=new File(file_path);
         if(file.isDirectory()){
-            if(!holder.file_name.getText().equals("返回上一级")) {
-                holder.file_sign.setTextSize(20);
+            if(!name.equals("<<previous>>")) {
+                holder.file_sign.setTextSize(14);
                 holder.file_sign.setText(">");
+            }
+            else {
+                holder.file_sign.setText("");
             }
         }
         else{
