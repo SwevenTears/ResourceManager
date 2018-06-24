@@ -41,7 +41,8 @@
             android:name=".text.EditTextActivity"
             android:label="@string/title_activity_edit_text"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden"> </activity>
+            android:windowSoftInputMode="stateHidden"></activity>
+        <activity android:name=".main.FileDetailsActivity"></activity>
     </application>
 
 </manifest>
