@@ -46,6 +46,7 @@
             android:windowSoftInputMode="stateHidden"></activity>
         <activity android:name=".main.FileDetailsActivity"></activity>
         <activity android:name=".music.PlayActivity"/>
+        <activity android:name=".video.PlayActivity"/>
     </application>
 
 </manifest>

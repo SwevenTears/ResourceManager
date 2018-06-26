@@ -2,37 +2,31 @@ package com.ccyy.resourcemanager.video;
 
 
 public class MyFile {
-    private int imageId;
     private String fileName;
     private String fileSize;
-    private String filePower;
     private String fileDate;
+    private String filePath;
 
-    public MyFile(String fileName,int imageId,String fileSize,String filePower,String fileDate){
-        super();
-        this.fileName=fileName;
-        this.imageId=imageId;
-        this.fileSize=fileSize;
-        this.filePower=filePower;
-        this.fileDate=fileDate;
+    public MyFile(String fileName, String fileSize, String fileDate, String filePath) {
+        this.fileName = fileName;
+        this.fileSize = fileSize;
+        this.fileDate = fileDate;
+        this.filePath = filePath;
     }
 
     public String getFileName() {
         return fileName;
-    }
-    public int getImageId(){
-        return imageId;
     }
 
     public String getFileSize() {
         return fileSize;
     }
 
-    public String getFilePower() {
-        return filePower;
-    }
-
     public String getFileDate() {
         return fileDate;
+    }
+
+    public String getFilePath() {
+        return filePath;
     }
 }
