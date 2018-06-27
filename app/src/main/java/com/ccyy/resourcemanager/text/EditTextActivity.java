@@ -53,6 +53,8 @@ public class EditTextActivity extends AppCompatActivity implements PopupMenu.OnM
     private String new_name;
     private ChooseFolderDialog folderChooser;
 
+    private static T t;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +80,8 @@ public class EditTextActivity extends AppCompatActivity implements PopupMenu.OnM
         menuInflater.inflate(R.menu.menu_edit_text, menu);
 
         popupMenu.setOnMenuItemClickListener(this);
+
+        t=new T(getBaseContext());
 
     }
 
@@ -225,7 +229,7 @@ public class EditTextActivity extends AppCompatActivity implements PopupMenu.OnM
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            T.tips(getApplicationContext(), "文件未保存");
+                            t.tips("文件未保存");
                             finish();
                         }
                     });
@@ -255,15 +259,15 @@ public class EditTextActivity extends AppCompatActivity implements PopupMenu.OnM
         setEditable_OF_EditText(false);
         getSupportActionBar().setTitle(TXT_name);
         if (OLD_FILE_DATA.equals(editText.getText().toString())) {
-            T.tips(getApplicationContext(), "文本未修改");
+            t.tips("文本未修改");
         } else {
             String newText = editText.getText().toString();
             boolean state = FileTools.saveTXTFile(newText, TXT_path);
             if (state) {
                 OLD_FILE_DATA = newText;
-                T.tips(getApplicationContext(), "保存成功");
+                t.tips("保存成功");
             } else {
-                T.tips(getApplicationContext(), "保存失败");
+                t.tips("保存失败");
             }
         }
     }
@@ -286,18 +290,17 @@ public class EditTextActivity extends AppCompatActivity implements PopupMenu.OnM
                 String parent_path = new File(TXT_path).getParent();
                 String choose_path = folderChooser.present_path;
                 if (parent_path.equals(choose_path)) {
-                    T.tips(getApplicationContext(), "目录未更改");
+                    t.tips("目录未更改");
                 } else {
-                    String new_text=editText.getText().toString();
-                    if (FileTools.saveTXTFile(new_text,choose_path+"/"+new_name)) {
+                    String new_text = editText.getText().toString();
+                    if (FileTools.saveTXTFile(new_text, choose_path + "/" + new_name)) {
                         setEditable_OF_EditText(false);
-                        TXT_name=new_name;
+                        TXT_name = new_name;
                         getSupportActionBar().setTitle(new_name);
-                        T.tips(getApplicationContext(),"保存成功");
+                        t.tips("保存成功");
                         folderChooser.dismiss();
-                    }
-                    else{
-                        T.tips(getApplicationContext(),"保存失败");
+                    } else {
+                        t.tips("保存失败");
                     }
                 }
             }
@@ -322,8 +325,7 @@ public class EditTextActivity extends AppCompatActivity implements PopupMenu.OnM
                         folderChooser();
                         inputName.dismiss();
                     } else {
-                        T.tips(getApplicationContext(),
-                                "文件名不合法：文件名中不能包括以下字符：\n\\/:*?\"<>|,");
+                        t.tips("文件名不合法：文件名中不能包括以下字符：\n\\/:*?\"<>|,");
                     }
                     break;
                 case R.id.btn_input_new_name_cancel: {

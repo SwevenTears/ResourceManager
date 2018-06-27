@@ -1,5 +1,6 @@
 package com.ccyy.resourcemanager.main;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -45,6 +46,8 @@ public class FileTools {
 
     private static String rootPath;
 
+    private static T t;
+
     /**
      * @param context
      * @param rootPath 设置文件图标地址、传递 rootPath
@@ -73,6 +76,8 @@ public class FileTools {
 
         unknown_file = BitmapFactory.decodeResource
                 (context.getResources(), R.drawable.file_unknown);
+
+        t=new T(context);
     }
 
     /**
@@ -374,7 +379,7 @@ public class FileTools {
 
             // 打开未知文件
             else {
-                T.error(context, "未知文件，无法打开");
+                t.error("未知文件，无法打开");
             }
         } catch (Exception e) {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -382,7 +387,7 @@ public class FileTools {
             if (!type.equals("*")) {
                 intent.setType(type + "/*");
                 context.startActivity(Intent.createChooser(intent, "选择程序"));
-                T.error(context, "暂时无法用本软件打开文件");
+                t.error("暂时无法用本软件打开文件");
             }
         }
     }

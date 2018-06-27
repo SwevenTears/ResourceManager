@@ -1,5 +1,6 @@
 package com.ccyy.resourcemanager.main;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.View;
 import android.widget.Button;
@@ -20,11 +21,13 @@ public class DeviceShow {
 
     private String rootPath;
 
+    private static T t;
+
     /**
-     * @param context          MainActivity.this
-     * @param show_device      容器
-     * @param rootPath         根目录
-     * @param present_path     当前目录
+     * @param context     MainActivity.this
+     * @param show_device  容器
+     * @param rootPath     根目录
+     * @param present_path 当前目录
      * @method 导航条制作
      */
     public DeviceShow
@@ -46,6 +49,9 @@ public class DeviceShow {
             show_device.addView(link_btn);
             i++;
         }
+
+        t = new T(context);
+
     }
 
     class Jump_path implements View.OnClickListener {
@@ -66,9 +72,7 @@ public class DeviceShow {
 
         @Override
         public void onClick(View v) {
-            T.tips(context, jump_path);
-//            MainActivity main=new MainActivity();
-//            main.getFileDir(jump_path,false);
+            t.tips(jump_path);
         }
     }
 }

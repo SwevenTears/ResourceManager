@@ -84,6 +84,8 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    private static T t;
+
     private LinearLayoutManager linearLayoutManager;
     private LinearLayout show_device;
     public RecyclerView file_recycler;
@@ -132,6 +134,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        t=new T(getBaseContext());
 
         initFile();
 
@@ -213,7 +217,7 @@ public class MainActivity extends AppCompatActivity
                 if (FileTools.isLegal_FileName(name)) {
                     boolean state = FileTools.createNewFolder(present_path, name);
                     if (state) {
-                        T.tips(getApplicationContext(), "创建成功");
+                        t.tips("创建成功");
                         String path = present_path + "/" + name;
                         File file = new File(path);
                         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.folder);
@@ -223,11 +227,10 @@ public class MainActivity extends AppCompatActivity
                         fileAdapter.addData(new_folder);
                         input_FolderName_ByCreateFolder.dismiss();
                     } else {
-                        T.error(getApplicationContext(), "创建失败,文件夹可能已经存在");
+                        t.error("创建失败,文件夹可能已经存在");
                     }
                 } else {
-                    T.tips(getApplicationContext(),
-                            "文件名不合法：文件名中不能包括以下字符：\n\\/:*?\"<>|,");
+                    t.error("文件名不合法：文件名中不能包括以下字符：\n\\/:*?\"<>|,");
                 }
             }
             if (id == R.id.btn_input_new_name_cancel) {
@@ -301,18 +304,18 @@ public class MainActivity extends AppCompatActivity
                     if (FileTools.isLegal_FileName(new_name)) {
                         if (FileTools.isSameFile_inDir(present_path, new_name)) {
                             if (FileTools.renameFile(file_list.get(0), new_name)) {
-                                T.tips(getApplicationContext(), "命名成功");
+                                t.tips("命名成功");
                                 fileAdapter.amendData(file_list.get(0),new_name);
                                 setShowPattern();
                                 input_FileName_ByReName.dismiss();
                             } else {
-                                T.tips(getApplicationContext(), "命名失败");
+                                t.error("命名失败");
                             }
                         } else {
-                            T.tips(getApplicationContext(), "该目录下已存在");
+                            t.error("该目录下已存在");
                         }
                     } else {
-                        T.error(getApplicationContext(), "命名不合法");
+                        t.error("命名不合法");
                     }
                     break;
                 }
@@ -339,10 +342,10 @@ public class MainActivity extends AppCompatActivity
             for (String file : file_list) {
                 if (FileTools.deleteFile(file)) {
                     fileAdapter.delData(file);
-                    T.tips(getApplicationContext(),"删除成功");
+                    t.tips("删除成功");
                 }
                 else{
-                    T.error(getApplicationContext(),"删除失败,暂不支持删除有文件的目录");
+                    t.error("删除失败,暂不支持删除有文件的目录");
                 }
             }
             setShowPattern();
@@ -364,21 +367,21 @@ public class MainActivity extends AppCompatActivity
                 for (String file : file_list) {
                     if(FileTools.isSameFile_inDir(path,file)) {
                         if (FileTools.cutFile(file, path)) {
-                            T.tips(getApplicationContext(), "剪切成功");
+                            t.tips("剪切成功");
                             fileAdapter.delData(file);
                         }
                         else{
-                            T.error(getApplicationContext(), "剪切失败，暂不支持剪切有文件的目录");
+                            t.error("剪切失败，暂不支持剪切有文件的目录");
                         }
                     }
                     else{
-                        T.tips(getApplicationContext(),"该目录下已有相同文件");
+                        t.tips("该目录下已有相同文件");
                     }
                 }
                 setShowPattern();
                 folderChooser.dismiss();
             } else {
-                T.tips(getApplicationContext(), "目录未更改，请重新选择");
+                t.tips("目录未更改，请重新选择");
             }
 
         }
@@ -393,21 +396,21 @@ public class MainActivity extends AppCompatActivity
                     for (String file : file_list) {
                         if (FileTools.isSameFile_inDir(path,file)) {
                             if (FileTools.copyFile(file, path)) {
-                                T.tips(getApplicationContext(), "复制成功");
+                                t.tips("复制成功");
                             }
                             else{
-                                T.error(getApplicationContext(),"复制失败，暂不支持复制有文件的目录");
+                                t.error("复制失败，暂不支持复制有文件的目录");
                             }
                         }
                         else{
-                            T.tips(getApplicationContext(),"该目录下已有相同文件");
+                            t.tips("该目录下已有相同文件");
                         }
                     }
                     setShowPattern();
                     folderChooser.dismiss();
 
                 } else {
-                    T.tips(getApplicationContext(), "目录未更改，请重新选择");
+                    t.tips("目录未更改，请重新选择");
                 }
             } else if (v.getId() == R.id.choose_folder_cancel) {
                 folderChooser.dismiss();

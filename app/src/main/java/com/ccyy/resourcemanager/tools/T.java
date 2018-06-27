@@ -8,12 +8,18 @@ import android.widget.Toast;
  * Email:sweventears@Foxmail.com
  */
 public class T {
-    
-    public static void error(Context context,String error){
+
+    private Context context;
+
+    public T(Context context) {
+        this.context = context;
+    }
+
+    public void error(String error){
         Toast.makeText(context,error,Toast.LENGTH_SHORT).show();
     }
 
-    public static void tips(Context context,String tips){
+    public void tips(String tips){
         Toast.makeText(context,tips,Toast.LENGTH_SHORT).show();
     }
 }

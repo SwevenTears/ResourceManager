@@ -49,26 +49,9 @@ public class InputNameDialog extends Dialog {
 
         if(default_name.equals("新建文件夹")){
             text_name.setHint("文件夹名称：如，folder");
-            text_name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if(hasFocus){
-                        text_name.setSelection(0,default_name.length());
-                    }
-                }
-            });
         }
         else{
             text_name.setHint("文件名称，如：file.type");
-            text_name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    if(hasFocus){
-                        int point=default_name.lastIndexOf(".");
-                        text_name.setSelection(0,point);
-                    }
-                }
-            });
         }
 
         /*
@@ -93,6 +76,20 @@ public class InputNameDialog extends Dialog {
         btn_cancel.setOnClickListener(mClickListener);
 
         this.setCancelable(true);
+
+        text_name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(hasFocus){
+                    int point=default_name.lastIndexOf(".");
+                    try {
+                        text_name.setSelection(0,point);
+                    } catch (Exception e) {
+                        text_name.setSelection(0,default_name.length());
+                    }
+                }
+            }
+        });
 
     }
 }
