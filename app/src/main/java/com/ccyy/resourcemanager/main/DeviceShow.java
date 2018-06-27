@@ -24,21 +24,14 @@ public class DeviceShow {
      * @param context          MainActivity.this
      * @param show_device      容器
      * @param rootPath         根目录
-     * @param childFolder_path 当前目录
-     * @param isParent         当前操作是否为点击“返回上一级”
+     * @param present_path     当前目录
      * @method 导航条制作
      */
     public DeviceShow
-    (Context context, LinearLayout show_device, String rootPath, String childFolder_path, boolean isParent) {
+    (Context context, LinearLayout show_device, String rootPath, String present_path) {
         String parent_path_show;
         this.rootPath = rootPath;
-        if (isParent)
-            parent_path_show = new File(childFolder_path)
-                    .getParentFile().getPath()
-                    .replace(rootPath, "手机内存");
-        else
-            parent_path_show = childFolder_path
-                    .replace(rootPath, "手机内存");
+        parent_path_show = present_path.replace(rootPath, "手机内存");
 
         String parent_path_shows[] = parent_path_show.split("/");
         int i = 0;

@@ -106,10 +106,8 @@ public class TextActivity extends AppCompatActivity {
                 Bitmap file_icon = BitmapFactory.decodeResource(getResources(), R.drawable.text);
                 long file_size = file.length();
                 long file_last_time = file.lastModified();
-                final int NO_FOLDER = 0;
-                final int NO_FILE = 0;
                 if (FileType.isTextFileType(file_path)) {
-                    FileData data = new FileData(file_name, file_path, file_icon, file_last_time, file_size, NO_FOLDER, NO_FILE, false);
+                    FileData data = new FileData(file_name, file_path, file_icon, file_last_time, file_size, false);
                     text_list_data.add(data);
                 }
             }

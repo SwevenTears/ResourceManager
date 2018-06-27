@@ -16,22 +16,13 @@
             android:id="@+id/nav_video"
             android:icon="@drawable/video"
             android:title="video" />
-        <!--<item-->
-            <!--android:id="@+id/nav_text"-->
-            <!--android:icon="@drawable/text"-->
-            <!--android:title="text" />-->
     </group>
 
     <item android:title="更多">
         <menu>
             <item
                 android:id="@+id/nav_share"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
-            <item
-                android:id="@+id/nav_send"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:title="功能后续增加" />
         </menu>
     </item>
 

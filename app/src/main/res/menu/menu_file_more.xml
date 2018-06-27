@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group>
+
+        <item
+            android:id="@+id/file_menu_item_detail"
+            android:title="详情" />
+
+        <item
+            android:id="@+id/file_menu__item_rename"
+            android:title="重命名" />
+
+    </group>
+
+    <item
+        android:id="@+id/file_menu_item_cancel"
+        android:title="取消"/>
+
+</menu>

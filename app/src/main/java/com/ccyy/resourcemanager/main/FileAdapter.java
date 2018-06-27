@@ -30,6 +30,8 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
     private onClickItem mClickItem = null;
     private onLongClickItem mLongClickItem = null;
 
+    private boolean isShowCheck=false;
+
     /**
      * @param context
      * @param data    file数据：name、 path
@@ -61,29 +63,56 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
     @Override
     public void onBindViewHolder(@NonNull final FileViewHolder holder, final int position) {
         String name = fileDatas.get(position).getName();
-        String path = fileDatas.get(position).getPath();
         Bitmap bitmap = fileDatas.get(position).getFileIcon();
-        boolean isCheck = fileDatas.get(position).isCheck();
-        long file_size = fileDatas.get(position).getSize();
+
 
         holder.file_name.setText(name);
         if (name.equals("<<previous>>"))
             holder.file_name.setText("返回上一级");
         holder.file_img.setImageBitmap(bitmap);
 
-        Log.e("第" + position + "", isCheck + "");
-        if (isCheck) {
-            holder.file_check.setSelected(true);
-        }
+        cutShow_CheckState(holder,name,position);
 
-        setFileSign(path, name, holder, file_size);
-
-        addItemClick(fileDatas, holder, position);
+        addItemClick(holder, position);
 
     }
 
-    private void setFileSign(String file_path, String name, FileViewHolder holder, long file_size) {
-        File file = new File(file_path);
+    private void cutShow_CheckState(FileViewHolder holder, String name, int position) {
+        boolean isCheck = fileDatas.get(position).isCheck();
+        if(isShowCheck){
+            holder.file_sign.setVisibility(View.INVISIBLE);
+            if(name.equals("<<previous>>")) {
+                holder.file_check.setVisibility(View.INVISIBLE);
+            }
+            else{
+                holder.file_check.setVisibility(View.VISIBLE);
+            }
+
+            if (isCheck) {
+                holder.file_check.setChecked(true);
+            }
+            else{
+                holder.file_check.setChecked(false);
+            }
+        }
+        else{
+            holder.file_sign.setVisibility(View.VISIBLE);
+            holder.file_check.setVisibility(View.INVISIBLE);
+            setFileSign(name, holder,position);
+        }
+    }
+
+    /**
+     * 显示文件的大小和添加目录的引导
+     * @param name 文件名称
+     * @param holder 。
+     * @param position
+     */
+    private void setFileSign(String name, FileViewHolder holder, int position) {
+
+        String path = fileDatas.get(position).getPath();
+        long file_size = fileDatas.get(position).getSize();
+        File file = new File(path);
         if (file.isDirectory()) {
             if (!name.equals("<<previous>>")) {
                 holder.file_sign.setTextSize(14);
@@ -98,16 +127,21 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
     }
 
     /**
-     * @param fileData
      * @param holder
      * @param position
      */
-    private void addItemClick(final ArrayList<FileData> fileData, FileViewHolder holder, final int position) {
+    private void addItemClick(FileViewHolder holder, final int position) {
         if (mClickItem != null) {
             holder.file_item.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mClickItem.onClick(fileData, position);
+                    mClickItem.onClick(fileDatas, position);
+                }
+            });
+            holder.file_check.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mClickItem.onClick(fileDatas,position);
                 }
             });
         }
@@ -115,7 +149,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
             holder.file_item.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    mLongClickItem.onClick(fileData, position);
+                    mLongClickItem.onClick(fileDatas, position);
                     return true;
                 }
             });
@@ -129,25 +163,60 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
 
     public void addData(FileData singleFile) {
         fileDatas.add(singleFile);
-        notifyItemInserted(getOrderPosition(fileDatas, singleFile));
+        notifyItemInserted(getOrderPosition(fileDatas, singleFile.getPath()));
+        notifyDataSetChanged();
     }
 
-    public void delData(FileData singleFile) {
-        notifyItemRemoved(getOrderPosition(fileDatas, singleFile));
-        fileDatas.remove(singleFile);
+    public void delData(String singleFile) {
+        int position=getOrderPosition(fileDatas, singleFile);
+        notifyItemRemoved(position);
+        fileDatas.remove(position);
+        notifyDataSetChanged();
+        hiddenCheck();
     }
 
-    private int getOrderPosition(ArrayList<FileData> fileDatas, FileData searchFile) {
+    public void amendData(String file_path, String new_name){
+        int position=getOrderPosition(fileDatas,file_path);
+        fileDatas.get(position).setName(new_name);
+        notifyItemChanged(position);
+        notifyDataSetChanged();
+    }
+
+    public void showCheck(int position) {
+        isShowCheck=true;
+        fileDatas.get(position).setCheck(true);
+        notifyDataSetChanged();
+    }
+
+    public void hiddenCheck(){
+        isShowCheck=false;
+        for(int i=0;i<getItemCount();i++){
+            fileDatas.get(i).setCheck(false);
+        }
+        notifyDataSetChanged();
+    }
+
+    public void addCheckedItem(int position){
+        fileDatas.get(position).setCheck(true);
+        notifyDataSetChanged();
+    }
+
+    public void delCheckedItem(int position){
+        fileDatas.get(position).setCheck(false);
+        notifyDataSetChanged();
+    }
+
+    private int getOrderPosition(ArrayList<FileData> fileDatas, String searchFile) {
         int position = 0;
         for (int i = 0; i < fileDatas.size(); i++) {
-            if (fileDatas.get(i).equals(searchFile)) {
+            if (fileDatas.get(i).getPath().equals(searchFile)) {
                 position = i;
             }
         }
         return position;
     }
 
-    class FileViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    class FileViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView file_img;
         private TextView file_name;
@@ -155,7 +224,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
         private CheckBox file_check;
         private LinearLayout file_item;
 
-        public FileViewHolder(View itemView) {
+        FileViewHolder(View itemView) {
             super(itemView);
             file_img = itemView.findViewById(R.id.file_img);
             file_name = itemView.findViewById(R.id.file_name);
@@ -163,29 +232,8 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
             file_check = itemView.findViewById(R.id.file_check);
             file_item = itemView.findViewById(R.id.file_item);
 
-            file_check.setVisibility(View.INVISIBLE);
-            file_check.setOnClickListener(this);
-
         }
 
-        @Override
-        public void onClick(View v) {
-            int position = getAdapterPosition();
-            boolean isCheck = fileDatas.get(position).isCheck();
-            String name = fileDatas.get(position).getName();
-            String path = fileDatas.get(position).getPath();
-
-            switch (v.getId()) {
-                case R.id.file_check: {
-                    if (!isCheck) {
-                        fileDatas.get(position).setCheck(true);
-                    } else {
-                        fileDatas.get(position).setCheck(false);
-                    }
-                    break;
-                }
-            }
-        }
     }
 
     public interface onClickItem {

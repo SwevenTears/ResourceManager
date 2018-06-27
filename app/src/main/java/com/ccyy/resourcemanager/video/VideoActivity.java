@@ -1,6 +1,7 @@
 package com.ccyy.resourcemanager.video;
 
 import com.ccyy.resourcemanager.R;
+import com.ccyy.resourcemanager.music.PlayActivity;
 
 import android.content.Context;
 import android.content.Intent;

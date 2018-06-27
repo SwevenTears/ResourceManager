@@ -42,19 +42,25 @@ public class FileData {
      * @param fileIcon     文件对应图标
      * @param last_date    最后修改日期
      * @param size         文件大小
-     * @param folder_count 子文件下文件夹数量
-     * @param file_count   子文件下文件数量
      * @param isCheck      文件是否被选中
      */
-    public FileData(String name, String path, Bitmap fileIcon, long last_date, long size, int folder_count, int file_count, boolean isCheck) {
+    public FileData(String name, String path, Bitmap fileIcon, long last_date, long size, boolean isCheck) {
         this.name = name;
         this.path = path;
         this.fileIcon = fileIcon;
         this.last_date = last_date;
         this.size = size;
-        this.folder_count = folder_count;
-        this.file_count = file_count;
         this.isCheck = isCheck;
+    }
+
+    /**
+     * 目前用于浏览文件夹
+     * @param name 文件名称
+     * @param path 文件地址
+     */
+    public FileData(String name, String path) {
+        this.name = name;
+        this.path = path;
     }
 
     public String getName() {

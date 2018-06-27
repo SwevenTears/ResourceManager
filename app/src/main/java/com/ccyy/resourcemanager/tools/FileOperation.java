@@ -51,33 +51,13 @@ public class FileOperation {
         for (int i = 0; i < names.length; i++) {
             for (int j = 0; j < names.length; j++) {
                 if (names[i].equals(list.get(j).getName())) {
-                    new_list.add(new FileData(names[i], list.get(j).getPath(), list.get(j).getFileIcon(),
-                            list.get(j).getLast_date(), list.get(j).getSize(),
-                            list.get(j).getFolder_count(), list.get(j).getFile_count(), list.get(j).isCheck()));
+                    new_list.add(new FileData(names[i], list.get(j).getPath(),
+                            list.get(j).getFileIcon(), list.get(j).getLast_date(),
+                            list.get(j).getSize(), list.get(j).isCheck()));
                 }
             }
         }
         return new_list;
-    }
-
-    /**
-     * @param parent_folder_path 需要查询文件数量的文件夹名称
-     * @return 当前文件夹的所有文件数量、文件夹数量和文件数量
-     */
-    public static int[] get_FolderCount_FileCount(String parent_folder_path) {
-        int count[] = {0, 0, 0};
-        File parent_folder = new File(parent_folder_path);
-        File[] parents = parent_folder.listFiles();
-        for (int i = 0; i < parents.length; i++) {
-            File child = parents[0];
-            if (child.isDirectory())
-                count[1]++;
-            else
-                count[2]++;
-            count[0]++;
-        }
-
-        return count;
     }
 
     /**
