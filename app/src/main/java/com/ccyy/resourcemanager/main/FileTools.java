@@ -225,22 +225,20 @@ public class FileTools {
     public static boolean deleteFile(String path) {
         File file = new File(path);
         if (file.isDirectory()) {
-            int count=0;
+            int count = 0;
             File childFile = null;
-            for(File child:file.listFiles()){
+            for (File child : file.listFiles()) {
                 count++;
-                childFile=child;
+                childFile = child;
             }
-            if(count==0){
+            if (count == 0) {
                 return file.delete();
-            }
-            else{
+            } else {
                 //todo 暂不支持删除有文件的目录
                 return file.delete();
             }
 
-        }
-        else{
+        } else {
             return file.delete();
         }
     }
