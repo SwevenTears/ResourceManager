@@ -1,15 +1,17 @@
 package com.ccyy.resourcemanager.dialog;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
-import android.widget.Adapter;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.ccyy.resourcemanager.R;
+import com.ccyy.resourcemanager.main.FileDetailsActivity;
 
 import java.io.File;
 
@@ -19,36 +21,37 @@ import java.io.File;
  */
 public class SingleFileMenuDialog extends Dialog{
 
-    private Activity activity;
+    private Context context;
     private String filePath;
-    private View.OnClickListener listener= v -> {
-        switch (v.getId()){
-            case R.id.single_file_menu_share: {
-                getFileOperation(0);
-                break;
-            }
-            case R.id.single_file_menu_cut: {
-                getFileOperation(1);
-                break;
-            }
-            case R.id.single_file_menu_copy: {
-                getFileOperation(2);
-                break;
-            }
-            case R.id.single_file_menu_del: {
-                getFileOperation(3);
-                break;
-            }
-            case R.id.single_file_menu_detail: {
-                getFileOperation(4);
-                break;
-            }
-            case R.id.single_file_menu_rename: {
-                getFileOperation(5);
-                break;
-            }
-        }
-    };
+    private View.OnClickListener listener;
+//    = v -> {
+//        switch (v.getId()){
+//            case R.id.single_file_menu_share: {
+//                getFileOperation(0);
+//                break;
+//            }
+//            case R.id.single_file_menu_cut: {
+//                getFileOperation(1);
+//                break;
+//            }
+//            case R.id.single_file_menu_copy: {
+//                getFileOperation(2);
+//                break;
+//            }
+//            case R.id.single_file_menu_del: {
+//                getFileOperation(3);
+//                break;
+//            }
+//            case R.id.single_file_menu_detail: {
+//                getFileOperation(4);
+//                break;
+//            }
+//            case R.id.single_file_menu_rename: {
+//                getFileOperation(5);
+//                break;
+//            }
+//        }
+//    }
 
     private static final int File_share=0;
     private static final int File_cut=1;
@@ -57,9 +60,13 @@ public class SingleFileMenuDialog extends Dialog{
     private static final int File_detail=4;
     private static final int File_rename=5;
 
-    public SingleFileMenuDialog(@NonNull Activity activity, String path, View.OnClickListener mListener) {
-        super(activity);
-        this.activity=activity;
+    public SingleFileMenuDialog(@NonNull Context context) {
+        super(context);
+    }
+
+    public SingleFileMenuDialog(@NonNull Context context, String path, View.OnClickListener mListener) {
+        super(context);
+        this.context =context;
         this.filePath=path;
         this.listener=mListener;
     }
@@ -82,6 +89,13 @@ public class SingleFileMenuDialog extends Dialog{
         del.setOnClickListener(listener);
         rename.setOnClickListener(listener);
         detail.setOnClickListener(listener);
+
+        Window window=getWindow();
+        WindowManager.LayoutParams layoutParams=window.getAttributes();
+        layoutParams.width=400;
+//        layoutParams.height=520;
+
+        setTitle("文件操作");
     }
 
     public void getFileOperation(int file_menu_id){
@@ -105,45 +119,57 @@ public class SingleFileMenuDialog extends Dialog{
         }
     }
 
-    private boolean renameFile() {
+    /**
+     * 为选中的文件重命名
+     */
+    private void renameFile() {
         File file=new File(filePath);
         String parentDir=file.getParent();
         String name=file.getName();
-        return false;
     }
 
-    private boolean detailFile() {
-        File file=new File(filePath);
-        String parentDir=file.getParent();
-        String name=file.getName();
-        return false;
+    /**
+     * 显示选中文件的详情
+     */
+    private void detailFile() {
+        Intent showDetail = new Intent(context, FileDetailsActivity.class);
+        showDetail.putExtra("path",filePath);
+        context.startActivity(showDetail);
     }
 
-    private boolean delFile() {
+    /**
+     * 删除选中的文件
+     */
+    private void delFile() {
         File file=new File(filePath);
-        String parentDir=file.getParent();
-        String name=file.getName();
-        return false;
+        file.delete();
     }
 
-    private boolean copyFile() {
+    /**
+     * 复制选中的文件
+     */
+    private void copyFile() {
         File file=new File(filePath);
         String parentDir=file.getParent();
         String name=file.getName();
-        return false;
     }
 
-    private boolean cutFile() {
+    /**
+     * 剪切选中的文件
+     */
+    private void cutFile() {
         File file=new File(filePath);
         String parentDir=file.getParent();
         String name=file.getName();
-        return false;
     }
 
-    private boolean shareFile() {
-        File file=new File(filePath);
-        String parentDir=file.getParent();
-        String name=file.getName();
-        return false;
+    /**
+     * 分享选中的文件
+     */
+    private void shareFile() {
+        Intent intent=new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_STREAM, filePath);
+        intent.setType("*/*");
+        context.startActivity(Intent.createChooser(intent, "分享到"));
     }
 }

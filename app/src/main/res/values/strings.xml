@@ -1,12 +1,9 @@
 <resources>
-    <string name="app_name">资源管理器</string>
+    <string name="app_name">TCY文件管理</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">By 绰绰有余.</string>
     <string name="nav_header_subtitle">Welcome use this app</string>
     <string name="nav_header_desc">头像抑或logo设计</string>
-    <string name="title_activity_edit_text">EditTextActivity</string>
-
-    <string name="title_activity_loading">LoadingActivity</string>
-    <string name="dummy_content">TCY\n\nResource\nManager</string>
+    <string name="dummy_content">TCY\nResource\nManager</string>
 </resources>
