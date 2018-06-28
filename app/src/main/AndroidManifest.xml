@@ -55,6 +55,8 @@
         <activity android:name=".main.FileDetailsActivity"/>
         <activity android:name=".music.PlayActivity"/>
         <activity android:name=".video.PlayVideoActivity"/>
+        <activity android:name=".photo.DisplayFullSizeImageActivity" />
+
     </application>
 
 </manifest>
