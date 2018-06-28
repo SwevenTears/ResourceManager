@@ -161,13 +161,18 @@ public class LoadingActivity extends AppCompatActivity {
     }
 
     private void run() {
-        String[] permission = {
-                Manifest.permission.READ_EXTERNAL_STORAGE,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
-                Manifest.permission.RECORD_AUDIO
-        };
-        requestRunTimePermission(permission, mlistener);
+        if(Build.VERSION.SDK_INT >= 23){
+            String[] permission = {
+                    Manifest.permission.READ_EXTERNAL_STORAGE,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
+                    Manifest.permission.RECORD_AUDIO
+            };
+            requestRunTimePermission(permission, mlistener);
+        }
+        else{
+            startApp();
+        }
     }
 
     /**
