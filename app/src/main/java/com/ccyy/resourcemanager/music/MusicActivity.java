@@ -46,10 +46,10 @@ public class MusicActivity extends AppCompatActivity {
             nameList.add(cursor.getString(cursor.getColumnIndex(MediaStore.Audio.Media.DISPLAY_NAME)));
         }
 
-        mRecycler.addItemDecoration(new DividerItemDecoration(this, 1));
+         mRecycler.addItemDecoration(new DividerItemDecoration(this, 1));
         mRecycler.setLayoutManager(new LinearLayoutManager(this));
-        MusicAdapter mAdapter = new MusicAdapter(this, musicList, nameList);
-        mRecycler.setAdapter(mAdapter);
+//        MusicAdapter mAdapter = new MusicAdapter(this, musicList, nameList);
+//        mRecycler.setAdapter(mAdapter);
 
     }
 }

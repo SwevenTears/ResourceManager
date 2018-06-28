@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.View;
 
@@ -79,7 +80,6 @@ public class Spectrogram extends View {
             mPoints[i * 4 + 2] = xi;
             mPoints[i * 4 + 3] = height - mBytes[i] * 3;
         }
-        canvas.drawColor(Color.GRAY);
 
         canvas.drawLines(mPoints, mForePaint);
 

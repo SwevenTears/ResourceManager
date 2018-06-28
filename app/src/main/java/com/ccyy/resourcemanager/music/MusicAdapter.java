@@ -1,7 +1,9 @@
 package com.ccyy.resourcemanager.music;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -13,6 +15,7 @@ import android.widget.TextView;
 
 import com.ccyy.resourcemanager.R;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,16 +28,14 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
     private LayoutInflater inflater;
     public ArrayList<String> music_list;
     private ArrayList<String> name_list;
-    private Context context;
+    private PlayActivity activity;
 
-    public MusicAdapter(Context context, ArrayList<String> music_list, ArrayList<String> name_list) {
-        this.context = context;
-        inflater = LayoutInflater.from(context);
+    public MusicAdapter(PlayActivity activity, ArrayList<String> music_list, ArrayList<String> name_list) {
+        this.activity = activity;
+        inflater = LayoutInflater.from(activity);
         this.music_list = music_list;
         this.name_list = name_list;
-
     }
-
 
     @NonNull
     @Override
@@ -45,13 +46,12 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
 
     @Override
     public void onBindViewHolder(@NonNull MusicAdapter.MusicViewHolder holder, final int position) {
-        holder.music_name.setText(name_list.get(position));
+        holder.music_name.setText(new File(name_list.get(position)).getName().replace(".mp3",""));
+
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(context, PlayActivity.class);
-                i.putExtra("path", music_list.get(position));
-                context.startActivity(i);
+                activity.play(music_list.get(position));
             }
         });
     }
@@ -62,12 +62,10 @@ public class MusicAdapter extends RecyclerView.Adapter<MusicAdapter.MusicViewHol
     }
 
     class MusicViewHolder extends RecyclerView.ViewHolder {
-        private ImageView music_img;
         private TextView music_name;
 
         public MusicViewHolder(View itemView) {
             super(itemView);
-            music_img = (ImageView) itemView.findViewById(R.id.music_img);
             music_name = (TextView) itemView.findViewById(R.id.music_name);
         }
     }
