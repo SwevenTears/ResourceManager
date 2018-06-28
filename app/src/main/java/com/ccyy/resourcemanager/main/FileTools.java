@@ -14,6 +14,8 @@ import com.ccyy.resourcemanager.MainActivity;
 import com.ccyy.resourcemanager.R;
 import com.ccyy.resourcemanager.ResourceManager;
 import com.ccyy.resourcemanager.music.PlayActivity;
+import com.ccyy.resourcemanager.photo.DisplayFullSizeImageActivity;
+import com.ccyy.resourcemanager.photo.ImageBean;
 import com.ccyy.resourcemanager.text.EditTextActivity;
 import com.ccyy.resourcemanager.tools.FileOperation;
 import com.ccyy.resourcemanager.tools.FileType;
@@ -122,24 +124,19 @@ public class FileTools {
 
                     //设置图像文件图标
                     if (FileType.isImageFileType(temp_path)) {
-                        try {
-                            Bitmap bitmap;
-                            try {
-                                bitmap = BitmapFactory.decodeFile(ResourceManager.App_Temp_Image_Path + "/" + temp_name);
-                            } catch (Exception e) {
-                                bitmap = BitmapFactory.decodeFile(temp_path);
-                                bitmap = FileOperation.setImgSize(temp_name, bitmap, 80, 100);
-                            }
-
-                            FileData fileData = new FileData(temp_name, temp_path, bitmap,
-                                    temp_last_data, temp_size, false);
-                            allFile.add(fileData);
-                        } catch (Exception e) {
-                            //默认图标
-                            FileData fileData = new FileData(temp_name, temp_path, bitmap_image,
-                                    temp_last_data, temp_size, false);
-                            allFile.add(fileData);
+                        Bitmap bitmap;
+                        String pathName=ResourceManager.App_Temp_Image_Path + "/" + temp_name;
+                        File imgFile=new File(pathName);
+                        if(imgFile.exists()){
+                            bitmap = BitmapFactory.decodeFile(pathName);
                         }
+                        else{
+                            bitmap = BitmapFactory.decodeFile(temp_path);
+                            bitmap = FileOperation.setImgSize(temp_name, bitmap, 80, 100);
+                        }
+                        FileData fileData = new FileData(temp_name, temp_path, bitmap,
+                                temp_last_data, temp_size, false);
+                        allFile.add(fileData);
                     }
 
                     //设置音频文件的图标
@@ -375,7 +372,12 @@ public class FileTools {
         try {
             // 打开图像文件
             if (FileType.isImageFileType(path)) {
-                //todo 连接方法
+                Intent intent=new Intent(context, DisplayFullSizeImageActivity.class);
+                intent.putExtra(DisplayFullSizeImageActivity.PICTURE_PATH, new ImageBean(path,false));
+                String[] str_imgs={path};
+                intent.putExtra("img[]",str_imgs);
+                intent.putExtra("present_position",""+0);
+                context.startActivity(intent);
             }
 
             // 打开音频文件

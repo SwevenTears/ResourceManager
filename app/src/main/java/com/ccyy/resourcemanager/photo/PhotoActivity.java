@@ -63,8 +63,12 @@ public class PhotoActivity extends AppCompatActivity {
     private void initView(){
         rePhotoWall=findViewById(R.id.recycler_view); //资源ID
         //设置RecyclerView为网格布局 3列
-        StaggeredGridLayoutManager layoutManager=new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
+        StaggeredGridLayoutManager layoutManager=new StaggeredGridLayoutManager(3,StaggeredGridLayoutManager.VERTICAL);
+
         rePhotoWall.setLayoutManager(layoutManager);
+        RecyclerViewItemDecoration decoration = new RecyclerViewItemDecoration(15);
+        rePhotoWall.addItemDecoration(decoration);
+
         adapter=new PhotoWallAdapter(PhotoActivity.this,imgs);
         rePhotoWall.setAdapter(adapter);
         if (imgs.size()==0)
