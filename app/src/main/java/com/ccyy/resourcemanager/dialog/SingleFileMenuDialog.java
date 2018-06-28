@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.ccyy.resourcemanager.R;
 import com.ccyy.resourcemanager.main.FileDetailsActivity;
+import com.ccyy.resourcemanager.main.FileTools;
 
 import java.io.File;
 
@@ -142,7 +143,7 @@ public class SingleFileMenuDialog extends Dialog{
      */
     private void delFile() {
         File file=new File(filePath);
-        file.delete();
+
     }
 
     /**
