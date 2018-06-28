@@ -83,7 +83,7 @@ import java.util.List;
         }
     }
 
-     public static String getModifiedTime(File f) {
+     public String getModifiedTime(File f) {
          Calendar cal = Calendar.getInstance();
          long time = f.lastModified();
          SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -92,7 +92,7 @@ import java.util.List;
 
      }
 
-     public static String getFileSizeChange(File file){
+     public String getFileSizeChange(File file){
          long size = file.length();
          //判断大小是用什么单位，K/M/G
          if (size / 1024 / 1024 / 1024 > 0) {
