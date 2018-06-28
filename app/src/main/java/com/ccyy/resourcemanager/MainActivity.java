@@ -652,6 +652,10 @@ public class MainActivity extends AppCompatActivity
         fileAdapter.showCheckBox(position);
         isCheckPattern = true;
         checkedItemCount = 1;
+        file_menu_send.setEnabled(true);
+        file_menu_cut.setEnabled(true);
+        file_menu_copy.setEnabled(true);
+        file_menu_delete.setEnabled(true);
         content_main_layout.removeView(table_menu_layout_replace);
         content_main_layout.addView(table_menu_layout);
         file_menu_table.addView(file_menu_more_layout);
