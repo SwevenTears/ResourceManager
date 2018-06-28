@@ -39,6 +39,7 @@ import com.ccyy.resourcemanager.main.FileData;
 import com.ccyy.resourcemanager.main.FileDetailsActivity;
 import com.ccyy.resourcemanager.main.FileTools;
 import com.ccyy.resourcemanager.music.MusicActivity;
+import com.ccyy.resourcemanager.music.PlayActivity;
 import com.ccyy.resourcemanager.photo.PhotoActivity;
 import com.ccyy.resourcemanager.tools.AffirmDialog;
 import com.ccyy.resourcemanager.tools.FileOperation;
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, PhotoActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_music) {
-            Intent intent = new Intent(this, MusicActivity.class);
+            Intent intent = new Intent(this, PlayActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_video) {
             Intent intent = new Intent(this, VideoActivity.class);
