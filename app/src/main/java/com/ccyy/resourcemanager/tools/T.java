@@ -15,11 +15,17 @@ public class T {
         this.context = context;
     }
 
-    public void error(String error){
-        Toast.makeText(context,error,Toast.LENGTH_SHORT).show();
+    /**
+     * @param error 错误提示内容
+     */
+    public void error(String error) {
+        Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
     }
 
-    public void tips(String tips){
-        Toast.makeText(context,tips,Toast.LENGTH_SHORT).show();
+    /**
+     * @param tips 正常提示内容
+     */
+    public void tips(String tips) {
+        Toast.makeText(context, tips, Toast.LENGTH_SHORT).show();
     }
 }

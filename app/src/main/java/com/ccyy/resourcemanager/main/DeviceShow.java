@@ -24,7 +24,7 @@ public class DeviceShow {
     private static T t;
 
     /**
-     * @param context     MainActivity.this
+     * @param context      MainActivity.this
      * @param show_device  容器
      * @param rootPath     根目录
      * @param present_path 当前目录
@@ -54,6 +54,9 @@ public class DeviceShow {
 
     }
 
+    /**
+     * 导航条每个TextView的监听事件
+     */
     class Jump_path implements View.OnClickListener {
 
         private Context context;

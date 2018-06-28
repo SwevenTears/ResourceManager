@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.ccyy.resourcemanager.R;
@@ -35,23 +34,17 @@ public class ChooseFolderDialog extends Dialog {
 
     private Button btn_choose;
     private Button btn_cancel;
-    private EditText input_name;
     private LinearLayout show_folder_device;
     private RecyclerView folder_recycler;
 
-    private String rootPath=FileOperation.getMobilePath();
+    private String rootPath = FileOperation.getMobilePath();
     private LinearLayoutManager linearLayoutManager;
     private FolderAdapter folderAdapter;
     public String present_path;
     private String previous_path;
 
-    public ChooseFolderDialog(Activity activity){
-        super(activity);
-        this.activity=activity;
-    }
-
     public ChooseFolderDialog(@NonNull Activity activity, View.OnClickListener onclick) {
-        super(activity,R.style.AppTheme);
+        super(activity, R.style.AppTheme);
         this.activity = activity;
         this.mOnclick = onclick;
     }
@@ -61,10 +54,9 @@ public class ChooseFolderDialog extends Dialog {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dialog_choose_folder);
 
-        btn_choose=findViewById(R.id.choose_folder);
-        btn_cancel=findViewById(R.id.choose_folder_cancel);
-        show_folder_device=findViewById(R.id.folder_device);
-
+        btn_choose = findViewById(R.id.choose_folder);
+        btn_cancel = findViewById(R.id.choose_folder_cancel);
+        show_folder_device = findViewById(R.id.folder_device);
 
 
         Window window = getWindow();
@@ -75,20 +67,30 @@ public class ChooseFolderDialog extends Dialog {
         btn_choose.setOnClickListener(mOnclick);
         btn_cancel.setOnClickListener(mOnclick);
 
-        folder_recycler=findViewById(R.id.folder_list);
+        folder_recycler = findViewById(R.id.folder_list);
         linearLayoutManager = new LinearLayoutManager(activity);
         folder_recycler.setLayoutManager(linearLayoutManager);
         folder_recycler.addItemDecoration(new DividerItemDecoration(activity, DividerItemDecoration.VERTICAL));
 
-        present_path =rootPath;
-        getFolderDir(rootPath,false);
+        present_path = rootPath;
+        getFolderDir(rootPath, false);
     }
 
+    /**
+     * @param present_path 当前点击的文件夹
+     * @param isParent     是够点击的“上一层”按钮
+     */
     private void getFolderDir(String present_path, boolean isParent) {
-        ArrayList<FileData> folders=getFolderList(present_path);
-        loadItem(folders,isParent);
+        ArrayList<FileData> folders = getFolderList(present_path);
+        loadItem(folders, isParent);
     }
 
+    /**
+     * 渲染adapter
+     *
+     * @param folders  文件夹数据
+     * @param isParent 是否点击“上一层目录”
+     */
     private void loadItem(ArrayList<FileData> folders, boolean isParent) {
 
         show_folder_device.removeAllViews();
@@ -99,12 +101,15 @@ public class ChooseFolderDialog extends Dialog {
             // 通过 LayoutManager 的 srcollToPositionWithOffset 方法进行定位
             linearLayoutManager.scrollToPositionWithOffset(position, 0);
         }
-        folderAdapter=new FolderAdapter(activity,folders);
+        folderAdapter = new FolderAdapter(activity, folders);
         folder_recycler.setAdapter(folderAdapter);
 
         addListener();
     }
 
+    /**
+     * 添加文件夹点击监听事件
+     */
     private void addListener() {
         folderAdapter.setOnClickItem(new FolderAdapter.onClickItem() {
             @Override
@@ -117,7 +122,7 @@ public class ChooseFolderDialog extends Dialog {
 
                 if (name.equals("<<previous>>")) {
                     present_path = parentPath;
-                    previous_path=path;
+                    previous_path = path;
                     getFolderDir(parentPath, true);
                 } else {
                     present_path = path;
@@ -151,7 +156,7 @@ public class ChooseFolderDialog extends Dialog {
         }
 
         for (File temp : files) {
-            if(!temp.isHidden()) {
+            if (!temp.isHidden()) {
                 if (temp.isDirectory()) {
                     String temp_path = temp.getPath();
                     String temp_name = temp.getName();
@@ -176,8 +181,8 @@ public class ChooseFolderDialog extends Dialog {
             if (!present_path.equals(rootPath)) {
                 //返回上一级，当前目录present_path将作为之前访问的目录previous_path,
                 // 因此，当前目录present_path应该是当前目录上一级的目录new File(present_path).getParent()
-                previous_path =present_path;
-                present_path=new File(present_path).getParent();
+                previous_path = present_path;
+                present_path = new File(present_path).getParent();
                 getFolderDir(present_path, true);
             } else {
                 dismiss();

@@ -47,10 +47,9 @@ public class InputNameDialog extends Dialog {
 
         text_name.setText(default_name);
 
-        if(default_name.equals("新建文件夹")){
+        if (default_name.equals("新建文件夹")) {
             text_name.setHint("文件夹名称：如，folder");
-        }
-        else{
+        } else {
             text_name.setHint("文件名称，如：file.type");
         }
 
@@ -80,12 +79,12 @@ public class InputNameDialog extends Dialog {
         text_name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
-                    int point=default_name.lastIndexOf(".");
+                if (hasFocus) {
+                    int point = default_name.lastIndexOf(".");
                     try {
-                        text_name.setSelection(0,point);
+                        text_name.setSelection(0, point);
                     } catch (Exception e) {
-                        text_name.setSelection(0,default_name.length());
+                        text_name.setSelection(0, default_name.length());
                     }
                 }
             }

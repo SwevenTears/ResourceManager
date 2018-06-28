@@ -21,11 +21,12 @@ public class FileData {
 
     /**
      * 适用于TXT文件的操作
-     * @param name 文件名
-     * @param path 文件地址
+     *
+     * @param name      文件名
+     * @param path      文件地址
      * @param last_date 最后修改时间
-     * @param size 文件大小
-     * @param isCheck 是否被选中
+     * @param size      文件大小
+     * @param isCheck   是否被选中
      */
     public FileData(String name, String path, long last_date, long size, boolean isCheck) {
         this.name = name;
@@ -37,12 +38,13 @@ public class FileData {
 
     /**
      * 该构造方法适用于文件浏览
-     * @param name         文件名
-     * @param path         文件地址
-     * @param fileIcon     文件对应图标
-     * @param last_date    最后修改日期
-     * @param size         文件大小
-     * @param isCheck      文件是否被选中
+     *
+     * @param name      文件名
+     * @param path      文件地址
+     * @param fileIcon  文件对应图标
+     * @param last_date 最后修改日期
+     * @param size      文件大小
+     * @param isCheck   文件是否被选中
      */
     public FileData(String name, String path, Bitmap fileIcon, long last_date, long size, boolean isCheck) {
         this.name = name;
@@ -55,6 +57,7 @@ public class FileData {
 
     /**
      * 目前用于浏览文件夹
+     *
      * @param name 文件名称
      * @param path 文件地址
      */

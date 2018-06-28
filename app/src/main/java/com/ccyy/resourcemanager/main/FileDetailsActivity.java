@@ -27,7 +27,7 @@ public class FileDetailsActivity extends AppCompatActivity {
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         actionBar.setCustomView(R.layout.actionbar_title_center);
 
-        TextView title=findViewById(R.id.actionbar_title_name);
+        TextView title = findViewById(R.id.actionbar_title_name);
         title.setText("详  情");
         title.setTextColor(Color.WHITE);
 
@@ -41,9 +41,9 @@ public class FileDetailsActivity extends AppCompatActivity {
 
         Intent details = getIntent();
         String path = details.getStringExtra("path");
-        File file=new File(path);
-        String name=file.getName();
-        String size=FileTools.getFileSize(file.length());
+        File file = new File(path);
+        String name = file.getName();
+        String size = FileTools.getFileSize(file.length());
 
         long millionSeconds = file.lastModified();
         Calendar c = Calendar.getInstance();
@@ -76,8 +76,8 @@ public class FileDetailsActivity extends AppCompatActivity {
         int count[] = {0, 0, 0};
         File parent_folder = new File(folder_path);
         File[] parents = parent_folder.listFiles();
-        for (File child:parents) {
-            if(!child.isHidden()) {
+        for (File child : parents) {
+            if (!child.isHidden()) {
                 if (child.isDirectory()) {
                     count[1]++;
                     int[] child_count = get_FolderCount_FileCount(child.getPath());

@@ -1,5 +1,6 @@
 package com.ccyy.resourcemanager.dialog;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -25,7 +26,7 @@ import java.util.ArrayList;
 public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderViewHolder> {
 
     private LayoutInflater inflater;
-    public ArrayList<FileData> folders;
+    private ArrayList<FileData> folders;
     private Bitmap bitmap;
 
     private onClickItem mClickItem;
@@ -37,7 +38,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderView
     public FolderAdapter(Context context, ArrayList<FileData> data) {
         inflater = LayoutInflater.from(context);
         this.folders = data;
-        bitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.folder);
+        bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.folder);
     }
 
     @NonNull
@@ -48,8 +49,8 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderView
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FolderViewHolder holder, int position) {
-        FileData folder= folders.get(position);
+    public void onBindViewHolder(@NonNull FolderViewHolder holder, @SuppressLint("RecyclerView") int position) {
+        FileData folder = folders.get(position);
         holder.folder_name.setText(folder.getName());
         holder.folder_img.setImageBitmap(bitmap);
 
@@ -63,11 +64,11 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderView
             holder.folder_sign.setText("");
         }
 
-        if(mClickItem!=null){
+        if (mClickItem != null) {
             holder.folder_item.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mClickItem.onClick(folders,position);
+                    mClickItem.onClick(folders, position);
                 }
             });
         }
@@ -78,14 +79,14 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderView
         return folders.size();
     }
 
-    public class FolderViewHolder extends RecyclerView.ViewHolder {
+    class FolderViewHolder extends RecyclerView.ViewHolder {
 
         private ImageView folder_img;
         private TextView folder_name;
         private TextView folder_sign;
         private LinearLayout folder_item;
 
-        public FolderViewHolder(View itemView) {
+        FolderViewHolder(View itemView) {
             super(itemView);
             folder_img = itemView.findViewById(R.id.folder_img);
             folder_name = itemView.findViewById(R.id.folder_name);

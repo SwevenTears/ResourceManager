@@ -1,5 +1,6 @@
 package com.ccyy.resourcemanager.text;
 
+import android.annotation.SuppressLint;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -53,6 +54,7 @@ public class EditTextActivity extends AppCompatActivity implements PopupMenu.OnM
     private String new_name;
     private ChooseFolderDialog folderChooser;
 
+    @SuppressLint("StaticFieldLeak")
     private static T t;
 
     @Override
@@ -81,7 +83,7 @@ public class EditTextActivity extends AppCompatActivity implements PopupMenu.OnM
 
         popupMenu.setOnMenuItemClickListener(this);
 
-        t=new T(getBaseContext());
+        t = new T(getBaseContext());
 
     }
 
@@ -207,6 +209,11 @@ public class EditTextActivity extends AppCompatActivity implements PopupMenu.OnM
         return false;
     }
 
+    /**
+     * 设置EditText是否可以编辑
+     *
+     * @param b 状态
+     */
     private void setEditable_OF_EditText(boolean b) {
         editText.setFocusable(b);
         editText.setFocusableInTouchMode(b);
@@ -238,6 +245,8 @@ public class EditTextActivity extends AppCompatActivity implements PopupMenu.OnM
     }
 
     /**
+     * 返回上一步的保存提示窗口
+     *
      * @param positiveListener 确定的监听器
      * @param NegativeListener 取消的监听器
      */
@@ -282,6 +291,9 @@ public class EditTextActivity extends AppCompatActivity implements PopupMenu.OnM
         inputName.show();
     }
 
+    /**
+     * 文件夹选择的监听
+     */
     private View.OnClickListener folderChoose_listener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -307,11 +319,17 @@ public class EditTextActivity extends AppCompatActivity implements PopupMenu.OnM
         }
     };
 
+    /**
+     * 打开文件夹选择器
+     */
     public void folderChooser() {
         folderChooser = new ChooseFolderDialog(EditTextActivity.this, folderChoose_listener);
         folderChooser.show();
     }
 
+    /**
+     * 另存为时输入名称的监听
+     */
     private View.OnClickListener saveAs_inputNameListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {

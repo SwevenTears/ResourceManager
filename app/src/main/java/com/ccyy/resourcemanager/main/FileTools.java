@@ -77,7 +77,7 @@ public class FileTools {
         unknown_file = BitmapFactory.decodeResource
                 (context.getResources(), R.drawable.file_unknown);
 
-        t=new T(context);
+        t = new T(context);
     }
 
     /**
@@ -224,6 +224,8 @@ public class FileTools {
     }
 
     /**
+     * 删除文件操作
+     *
      * @param path 文件路径
      * @return 是否修改成功
      */
@@ -249,6 +251,8 @@ public class FileTools {
     }
 
     /**
+     * 复制文件操作
+     *
      * @param filePath 文件路径
      * @param path     目标目录地址
      * @return 是否修改成功
@@ -277,6 +281,8 @@ public class FileTools {
     }
 
     /**
+     * 剪切文件操作
+     *
      * @param filePath  原文件路径
      * @param newFolder 新文件目录下
      * @return 是否修改成功
@@ -286,6 +292,8 @@ public class FileTools {
     }
 
     /**
+     * 重命名文件操作
+     *
      * @param path     文件路径
      * @param new_name 新的文件名
      * @return 是否修改成功
@@ -297,6 +305,13 @@ public class FileTools {
         return file.renameTo(newFile);
     }
 
+    /**
+     * 创建文件夹操作
+     *
+     * @param dir         目录
+     * @param folder_name 文件名
+     * @return 是否创建成功
+     */
     public static boolean createNewFolder(String dir, String folder_name) {
         File file = new File(dir + "/" + folder_name);
         if (!file.exists() && !file.isDirectory()) {
@@ -306,6 +321,13 @@ public class FileTools {
         }
     }
 
+    /**
+     * 判断目录下是否有同一文件名的文件
+     *
+     * @param dir  目录
+     * @param path 文件路径
+     * @return 是否有同名文件
+     */
     public static boolean isSameFile_inDir(String dir, String path) {
         File dir_folder = new File(dir);
         int count = 0;
@@ -318,6 +340,8 @@ public class FileTools {
     }
 
     /**
+     * 保存TXT文件
+     *
      * @param newText   新写的内容
      * @param file_path 保存路径
      * @return 是否保存成功
@@ -393,6 +417,8 @@ public class FileTools {
     }
 
     /**
+     * 获取文件mime类型
+     *
      * @param file File文件
      * @return 文件的mime类型
      */
@@ -412,6 +438,8 @@ public class FileTools {
     }
 
     /**
+     * 获取文件大小
+     *
      * @param file_size 文件字节数
      * @return 文件大小，优化后的文件大小显示
      */
@@ -431,6 +459,8 @@ public class FileTools {
     }
 
     /**
+     * 判断文件名是否合法
+     *
      * @param name 文件名
      * @return 文件名是否合法
      */

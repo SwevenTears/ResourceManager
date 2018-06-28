@@ -14,6 +14,7 @@ public class AffirmDialog {
 
     /**
      * 退出确认
+     *
      * @param context
      */
     public static void exitApp(Context context) {
@@ -34,6 +35,7 @@ public class AffirmDialog {
 
     /**
      * 删除提示
+     *
      * @param context
      */
     public static void sureDel(Context context, DialogInterface.OnClickListener btn_sure, DialogInterface.OnClickListener btn_cancel) {

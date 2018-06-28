@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +29,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
     private onClickItem mClickItem = null;
     private onLongClickItem mLongClickItem = null;
 
-    private boolean isShowCheck=false;
+    private boolean isShowCheck = false;
 
     /**
      * @param context
@@ -71,41 +70,46 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
             holder.file_name.setText("返回上一级");
         holder.file_img.setImageBitmap(bitmap);
 
-        cutShow_CheckState(holder,name,position);
+        cutShow_SelectState(holder, name, position);
 
         addItemClick(holder, position);
 
     }
 
-    private void cutShow_CheckState(FileViewHolder holder, String name, int position) {
+    /**
+     * 切换文件浏览和文件选择状态后的不同渲染方式
+     *
+     * @param holder   ，
+     * @param name     创建文件目录时赋予的文件名
+     * @param position 渲染数据时当前位置
+     */
+    private void cutShow_SelectState(FileViewHolder holder, String name, int position) {
         boolean isCheck = fileDatas.get(position).isCheck();
-        if(isShowCheck){
+        if (isShowCheck) {
             holder.file_sign.setVisibility(View.INVISIBLE);
-            if(name.equals("<<previous>>")) {
+            if (name.equals("<<previous>>")) {
                 holder.file_check.setVisibility(View.INVISIBLE);
-            }
-            else{
+            } else {
                 holder.file_check.setVisibility(View.VISIBLE);
             }
 
             if (isCheck) {
                 holder.file_check.setChecked(true);
-            }
-            else{
+            } else {
                 holder.file_check.setChecked(false);
             }
-        }
-        else{
+        } else {
             holder.file_sign.setVisibility(View.VISIBLE);
             holder.file_check.setVisibility(View.INVISIBLE);
-            setFileSign(name, holder,position);
+            setFileSign(name, holder, position);
         }
     }
 
     /**
      * 显示文件的大小和添加目录的引导
-     * @param name 文件名称
-     * @param holder 。
+     *
+     * @param name     文件名称
+     * @param holder   。
      * @param position
      */
     private void setFileSign(String name, FileViewHolder holder, int position) {
@@ -141,11 +145,11 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
             holder.file_check.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mClickItem.onClick(fileDatas,position);
+                    mClickItem.onClick(fileDatas, position);
                 }
             });
         }
-        if(mLongClickItem != null){
+        if (mLongClickItem != null) {
             holder.file_item.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
@@ -161,51 +165,90 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
         return fileDatas.size();
     }
 
+    /**
+     * 新增数据后并刷新adapter
+     *
+     * @param singleFile 单个文件信息
+     */
     public void addData(FileData singleFile) {
         fileDatas.add(singleFile);
         notifyItemInserted(getOrderPosition(fileDatas, singleFile.getPath()));
         notifyDataSetChanged();
     }
 
+    /**
+     * 删除数据并刷新adapter
+     *
+     * @param singleFile 单个文件的路径
+     */
     public void delData(String singleFile) {
-        int position=getOrderPosition(fileDatas, singleFile);
+        int position = getOrderPosition(fileDatas, singleFile);
         notifyItemRemoved(position);
         fileDatas.remove(position);
         notifyDataSetChanged();
-        hiddenCheck();
+        hiddenCheckBox();
     }
 
-    public void amendData(String file_path, String new_name){
-        int position=getOrderPosition(fileDatas,file_path);
+    /**
+     * 修改数据后并刷新adapter
+     *
+     * @param file_path 要修改的文件的地址
+     * @param new_name  修改后要显示的文件名称
+     */
+    public void amendData(String file_path, String new_name) {
+        int position = getOrderPosition(fileDatas, file_path);
         fileDatas.get(position).setName(new_name);
         notifyItemChanged(position);
         notifyDataSetChanged();
     }
 
-    public void showCheck(int position) {
-        isShowCheck=true;
+    /**
+     * 首次进入选择文件时的改变
+     *
+     * @param position 长按文件的position
+     */
+    public void showCheckBox(int position) {
+        isShowCheck = true;
         fileDatas.get(position).setCheck(true);
         notifyDataSetChanged();
     }
 
-    public void hiddenCheck(){
-        isShowCheck=false;
-        for(int i=0;i<getItemCount();i++){
+    /**
+     * 切换成浏览模式时隐藏CheckBox
+     */
+    public void hiddenCheckBox() {
+        isShowCheck = false;
+        for (int i = 0; i < getItemCount(); i++) {
             fileDatas.get(i).setCheck(false);
         }
         notifyDataSetChanged();
     }
 
-    public void addCheckedItem(int position){
+    /**
+     * 选中一个数据后刷新数据
+     *
+     * @param position 选中的文件位置
+     */
+    public void addCheckedItem(int position) {
         fileDatas.get(position).setCheck(true);
         notifyDataSetChanged();
     }
 
-    public void delCheckedItem(int position){
+    /**
+     * 取消选择文件后刷新数据
+     *
+     * @param position 选择文件时的位置
+     */
+    public void delCheckedItem(int position) {
         fileDatas.get(position).setCheck(false);
         notifyDataSetChanged();
     }
 
+    /**
+     * @param fileDatas  当前所有文件信息
+     * @param searchFile 要查询位置的文件路径
+     * @return 文件的位置
+     */
     private int getOrderPosition(ArrayList<FileData> fileDatas, String searchFile) {
         int position = 0;
         for (int i = 0; i < fileDatas.size(); i++) {
