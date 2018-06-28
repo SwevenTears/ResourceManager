@@ -13,27 +13,6 @@ import com.ccyy.resourcemanager.R;
 public class AffirmDialog {
 
     /**
-     * 退出确认
-     *
-     * @param context
-     */
-    public static void exitApp(Context context) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setIcon(R.drawable.ic_launcher_background);
-        builder.setTitle("退出");
-        builder.setMessage("确定退出吗？");
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-
-            public void onClick(DialogInterface dialog, int which) {
-                System.exit(0);
-
-            }
-        });
-        builder.setNegativeButton("取消", null);
-        builder.show();
-    }
-
-    /**
      * 删除提示
      *
      * @param context

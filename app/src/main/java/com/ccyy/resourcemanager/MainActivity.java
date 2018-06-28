@@ -139,6 +139,8 @@ public class MainActivity extends AppCompatActivity
 
         t = new T(getBaseContext());
 
+        folderChooser=new ChooseFolderDialog(MainActivity.this);
+
         initFile();
         setMenuList();
     }
@@ -395,23 +397,31 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void onClick(View v) {
             String path = folderChooser.present_path;
-            if (!path.equals(present_path)) {
-                for (String file : file_list) {
-                    if (FileTools.isSameFile_inDir(path, file)) {
-                        if (FileTools.cutFile(file, path)) {
-                            t.tips("剪切成功");
-                            fileAdapter.delData(file);
-                        } else {
-                            t.error("剪切失败，暂不支持剪切有文件的目录");
+            switch (v.getId()){
+                case R.id.choose_folder:{
+                    if (!path.equals(present_path)) {
+                        for (String file : file_list) {
+                            if (FileTools.isSameFile_inDir(path, file)) {
+                                if (FileTools.cutFile(file, path)) {
+                                    t.tips("剪切成功");
+                                    fileAdapter.delData(file);
+                                } else {
+                                    t.error("剪切失败，暂不支持剪切有文件的目录");
+                                }
+                            } else {
+                                t.tips("该目录下已有相同文件");
+                            }
                         }
+                        setShowPattern();
+                        folderChooser.dismiss();
                     } else {
-                        t.tips("该目录下已有相同文件");
+                        t.tips("目录未更改，请重新选择");
                     }
+                    break;
                 }
-                setShowPattern();
-                folderChooser.dismiss();
-            } else {
-                t.tips("目录未更改，请重新选择");
+                case R.id.choose_folder_cancel:{
+                    folderChooser.dismiss();
+                }
             }
 
         }
@@ -631,26 +641,6 @@ public class MainActivity extends AppCompatActivity
         startActivity(details);
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (!isCheckPattern) {
-                if (!present_path.equals(rootPath)) {
-                    //返回上一级，当前目录present_path将作为之前访问的目录previous_path,
-                    // 因此，当前目录present_path应该是当前目录上一级的目录new File(present_path).getParent()
-                    previous_path = present_path;
-                    present_path = new File(present_path).getParent();
-                    getFileDir(present_path, true);
-                } else {
-                    AffirmDialog.exitApp(this);
-                }
-            } else {
-                setShowPattern();
-            }
-        }
-        return true;
-    }
-
     /**
      * 首次切换到文件选择状态
      *
@@ -662,6 +652,10 @@ public class MainActivity extends AppCompatActivity
         fileAdapter.showCheckBox(position);
         isCheckPattern = true;
         checkedItemCount = 1;
+        file_menu_send.setEnabled(true);
+        file_menu_cut.setEnabled(true);
+        file_menu_copy.setEnabled(true);
+        file_menu_delete.setEnabled(true);
         content_main_layout.removeView(table_menu_layout_replace);
         content_main_layout.addView(table_menu_layout);
         file_menu_table.addView(file_menu_more_layout);
@@ -681,4 +675,32 @@ public class MainActivity extends AppCompatActivity
         content_main_layout.addView(table_menu_layout_replace);
     }
 
+
+    private long firstTime=0;
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (!isCheckPattern) {
+                if (!present_path.equals(rootPath)) {
+                    //返回上一级，当前目录present_path将作为之前访问的目录previous_path,
+                    // 因此，当前目录present_path应该是当前目录上一级的目录new File(present_path).getParent()
+                    previous_path = present_path;
+                    present_path = new File(present_path).getParent();
+                    getFileDir(present_path, true);
+                } else {
+                    long secondTime=System.currentTimeMillis();
+                    if(secondTime-firstTime>1000){
+                        t.tips("再按一次退出");
+                        firstTime=secondTime;
+                    }
+                    else{
+                        System.exit(0);
+                    }
+                }
+            } else {
+                setShowPattern();
+            }
+        }
+        return true;
+    }
 }

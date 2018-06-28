@@ -2,6 +2,7 @@ package com.ccyy.resourcemanager.dialog;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.DividerItemDecoration;
@@ -42,6 +43,11 @@ public class ChooseFolderDialog extends Dialog {
     private FolderAdapter folderAdapter;
     public String present_path;
     private String previous_path;
+
+    public ChooseFolderDialog(@NonNull Activity activity) {
+        super(activity);
+        this.activity = activity;
+    }
 
     public ChooseFolderDialog(@NonNull Activity activity, View.OnClickListener onclick) {
         super(activity, R.style.AppTheme);
