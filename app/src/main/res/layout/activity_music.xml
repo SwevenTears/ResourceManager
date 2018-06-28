@@ -1,75 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".music.PlayActivity">
 
-    <com.ccyy.resourcemanager.music.Spectrogram
-        android:id="@+id/spectrogram"
-        android:layout_width="296dp"
-        android:layout_height="345dp"
+
+    <FrameLayout
+        android:id="@+id/myFrame"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/relativeLayout"
+        app:layout_constraintBottom_toTopOf="@+id/progressBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <RelativeLayout
-        android:id="@+id/relativeLayout"
+        <com.ccyy.resourcemanager.music.Spectrogram
+            android:id="@+id/spectrogram"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="8dp"
+            android:layout_marginEnd="32dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/mmusic_recycler"
+            android:layout_width="460dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp" />
+    </FrameLayout>
+
+    <!--<RelativeLayout-->
+    <!--android:id="@+id/relativeLayout"-->
+    <!--android:layout_width="0dp"-->
+    <!--android:layout_height="100dp"-->
+    <!--app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--app:layout_constraintEnd_toEndOf="parent"-->
+    <!--app:layout_constraintStart_toStartOf="parent"-->
+    <!--app:layout_constraintTop_toTopOf="parent"-->
+    <!--app:layout_constraintVertical_bias="1.0"-->
+    <!--tools:ignore="MissingConstraints">-->
+
+    <TextView
+        android:id="@+id/nowTime"
+        android:layout_width="50dp"
+        android:layout_height="20dp"
+        android:layout_below="@+id/musicName"
+        android:gravity="center"
+        app:layout_constraintRight_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/myFrame"
+        app:layout_constraintBottom_toTopOf="@id/musicImg"
+        tools:layout_editor_absoluteY="412dp" />
+
+
+    <android.support.v7.widget.AppCompatSeekBar
+        android:id="@+id/progressBar"
         android:layout_width="0dp"
-        android:layout_height="100dp"
+        android:layout_height="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/nowTime"
+        android:layout_marginBottom="16dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_toRightOf="@+id/nowTime"
+        app:layout_constraintBottom_toTopOf="@id/musicName"
+        app:layout_constraintEnd_toStartOf="@+id/endTime"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toRightOf="@+id/nowTime"
+        app:layout_constraintStart_toEndOf="@+id/nowTime"
+        app:layout_constraintTop_toBottomOf="@id/myFrame" />
+
+    <TextView
+        android:id="@+id/endTime"
+        android:layout_width="50dp"
+        android:layout_height="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/nowTime"
+        android:gravity="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/myFrame"
+        app:layout_constraintBottom_toTopOf="@id/play_paused"
+        tools:layout_editor_absoluteY="413dp" />
+
+    <TextView
+        android:id="@+id/musicName"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="8dp"
+        android:gravity="center"
+        android:text="暂无播放歌曲"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/play_paused"
+        app:layout_constraintRight_toLeftOf="@id/play_paused"
+        app:layout_constraintStart_toEndOf="@+id/musicImg" />
+
+    <Button
+        android:id="@+id/play_paused"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/btn_circle"
+        android:text="播放"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        tools:ignore="MissingConstraints">
+        app:layout_constraintLeft_toRightOf="@id/musicName" />
 
-        <TextView
-            android:id="@+id/musicName"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:text="@string/app_name" />
+    <ImageView
+        android:id="@+id/musicImg"
+        android:src="@drawable/music"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/musicName"
+        app:layout_constraintStart_toStartOf="parent" />
 
-        <TextView
-            android:id="@+id/nowTime"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:layout_below="@+id/musicName"
-            android:gravity="center"
-            android:text="@string/app_name" />
 
-        <android.support.v7.widget.AppCompatSeekBar
-            android:id="@+id/progressBar"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/nowTime"
-            android:layout_marginRight="50dp"
-            android:layout_toRightOf="@+id/nowTime" />
-
-        <TextView
-            android:id="@+id/endTime"
-            android:layout_width="50dp"
-            android:layout_height="40dp"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/nowTime"
-            android:gravity="center"
-            android:text="@string/app_name" />
-
-        <Button
-            android:id="@+id/play_paused"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:layout_alignParentBottom="true" />
-    </RelativeLayout>
+    <!--</RelativeLayout>-->
 
 </android.support.constraint.ConstraintLayout>
