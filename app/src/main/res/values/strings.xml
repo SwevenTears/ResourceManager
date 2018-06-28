@@ -6,4 +6,7 @@
     <string name="nav_header_subtitle">Welcome use this app</string>
     <string name="nav_header_desc">头像抑或logo设计</string>
     <string name="title_activity_edit_text">EditTextActivity</string>
+
+    <string name="title_activity_loading">LoadingActivity</string>
+    <string name="dummy_content">TCY\n\nResource\nManager</string>
 </resources>

@@ -154,7 +154,6 @@ public class MainActivity extends AppCompatActivity
         file_menu_copy = findViewById(R.id.file_menu_item_copy);
         file_menu_delete = findViewById(R.id.file_menu_item_delete);
         Button create_new_folder = findViewById(R.id.create_new_folder);
-        create_new_folder.setText("新建文件夹");
         TextView file_menu_more = findViewById(R.id.file_menu_item_more);
         file_menu_table = findViewById(R.id.file_menu_table);
         file_menu_more_layout = findViewById(R.id.file_menu_more_layout);
@@ -397,23 +396,31 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void onClick(View v) {
             String path = folderChooser.present_path;
-            if (!path.equals(present_path)) {
-                for (String file : file_list) {
-                    if (FileTools.isSameFile_inDir(path, file)) {
-                        if (FileTools.cutFile(file, path)) {
-                            t.tips("剪切成功");
-                            fileAdapter.delData(file);
-                        } else {
-                            t.error("剪切失败，暂不支持剪切有文件的目录");
+            switch (v.getId()){
+                case R.id.choose_folder:{
+                    if (!path.equals(present_path)) {
+                        for (String file : file_list) {
+                            if (FileTools.isSameFile_inDir(path, file)) {
+                                if (FileTools.cutFile(file, path)) {
+                                    t.tips("剪切成功");
+                                    fileAdapter.delData(file);
+                                } else {
+                                    t.error("剪切失败，暂不支持剪切有文件的目录");
+                                }
+                            } else {
+                                t.tips("该目录下已有相同文件");
+                            }
                         }
+                        setShowPattern();
+                        folderChooser.dismiss();
                     } else {
-                        t.tips("该目录下已有相同文件");
+                        t.tips("目录未更改，请重新选择");
                     }
+                    break;
                 }
-                setShowPattern();
-                folderChooser.dismiss();
-            } else {
-                t.tips("目录未更改，请重新选择");
+                case R.id.choose_folder_cancel:{
+                    folderChooser.dismiss();
+                }
             }
 
         }
@@ -644,6 +651,10 @@ public class MainActivity extends AppCompatActivity
         fileAdapter.showCheckBox(position);
         isCheckPattern = true;
         checkedItemCount = 1;
+        file_menu_send.setEnabled(true);
+        file_menu_cut.setEnabled(true);
+        file_menu_copy.setEnabled(true);
+        file_menu_delete.setEnabled(true);
         content_main_layout.removeView(table_menu_layout_replace);
         content_main_layout.addView(table_menu_layout);
         file_menu_table.addView(file_menu_more_layout);

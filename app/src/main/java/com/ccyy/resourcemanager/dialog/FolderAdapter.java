@@ -49,7 +49,7 @@ public class FolderAdapter extends RecyclerView.Adapter<FolderAdapter.FolderView
     }
 
     @Override
-    public void onBindViewHolder(@NonNull FolderViewHolder holder, @SuppressLint("RecyclerView") int position) {
+    public void onBindViewHolder(@NonNull FolderViewHolder holder, @SuppressLint("RecyclerView")final int position) {
         FileData folder = folders.get(position);
         holder.folder_name.setText(folder.getName());
         holder.folder_img.setImageBitmap(bitmap);

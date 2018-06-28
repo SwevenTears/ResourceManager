@@ -62,9 +62,9 @@
 
                 <Button
                     android:id="@+id/create_new_folder"
-                    android:layout_width="wrap_content"
+                    android:layout_width="55dp"
                     android:layout_height="match_parent"
-                    android:src="@android:drawable/btn_star_big_on" />
+                    android:background="@drawable/add_folder" />
 
             </LinearLayout>
 
@@ -93,7 +93,7 @@
             <LinearLayout android:orientation="horizontal">
 
                 <TextView
-                    android:text="发送"
+                    android:text="分享"
                     android:id="@+id/file_menu_item_send"
                     android:gravity="center"
                     android:layout_width="match_parent"
