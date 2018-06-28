@@ -124,24 +124,19 @@ public class FileTools {
 
                     //设置图像文件图标
                     if (FileType.isImageFileType(temp_path)) {
-                        try {
-                            Bitmap bitmap;
-                            try {
-                                bitmap = BitmapFactory.decodeFile(ResourceManager.App_Temp_Image_Path + "/" + temp_name);
-                            } catch (Exception e) {
-                                bitmap = BitmapFactory.decodeFile(temp_path);
-                                bitmap = FileOperation.setImgSize(temp_name, bitmap, 80, 100);
-                            }
-
-                            FileData fileData = new FileData(temp_name, temp_path, bitmap,
-                                    temp_last_data, temp_size, false);
-                            allFile.add(fileData);
-                        } catch (Exception e) {
-                            //默认图标
-                            FileData fileData = new FileData(temp_name, temp_path, bitmap_image,
-                                    temp_last_data, temp_size, false);
-                            allFile.add(fileData);
+                        Bitmap bitmap;
+                        String pathName=ResourceManager.App_Temp_Image_Path + "/" + temp_name;
+                        File imgFile=new File(pathName);
+                        if(imgFile.exists()){
+                            bitmap = BitmapFactory.decodeFile(pathName);
                         }
+                        else{
+                            bitmap = BitmapFactory.decodeFile(temp_path);
+                            bitmap = FileOperation.setImgSize(temp_name, bitmap, 80, 100);
+                        }
+                        FileData fileData = new FileData(temp_name, temp_path, bitmap,
+                                temp_last_data, temp_size, false);
+                        allFile.add(fileData);
                     }
 
                     //设置音频文件的图标
