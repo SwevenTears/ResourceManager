@@ -90,6 +90,7 @@ public class DisplayFullSizeImageActivity extends AppCompatActivity {
 
         @Override
         public void onBindViewHolder(@NonNull MovieAdapter.MovieHolder holder, int position) {
+
             Bitmap bitmap=BitmapFactory.decodeFile(imgPaths.get(position));
             holder.img.setImageBitmap(bitmap);
         }

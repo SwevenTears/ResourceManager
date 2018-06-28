@@ -52,7 +52,9 @@
         <activity android:name=".main.FileDetailsActivity" />
         <activity android:name=".music.PlayActivity" />
         <activity android:name=".video.PlayVideoActivity" />
-        <activity android:name=".photo.DisplayFullSizeImageActivity" />
+        <activity android:name=".photo.DisplayFullSizeImageActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
         <activity
             android:name=".LoadingActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
