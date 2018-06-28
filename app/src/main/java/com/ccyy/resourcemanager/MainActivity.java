@@ -154,7 +154,6 @@ public class MainActivity extends AppCompatActivity
         file_menu_copy = findViewById(R.id.file_menu_item_copy);
         file_menu_delete = findViewById(R.id.file_menu_item_delete);
         Button create_new_folder = findViewById(R.id.create_new_folder);
-        create_new_folder.setText("新建文件夹");
         TextView file_menu_more = findViewById(R.id.file_menu_item_more);
         file_menu_table = findViewById(R.id.file_menu_table);
         file_menu_more_layout = findViewById(R.id.file_menu_more_layout);
