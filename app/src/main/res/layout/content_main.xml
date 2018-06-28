@@ -93,7 +93,7 @@
             <LinearLayout android:orientation="horizontal">
 
                 <TextView
-                    android:text="发送"
+                    android:text="分享"
                     android:id="@+id/file_menu_item_send"
                     android:gravity="center"
                     android:layout_width="match_parent"
