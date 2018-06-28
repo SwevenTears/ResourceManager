@@ -1,10 +1,16 @@
 package com.ccyy.resourcemanager.video;
 
 
+import android.content.Context;
 import android.content.Intent;
+import android.drm.DrmStore;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.AttributeSet;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
@@ -25,7 +31,9 @@ public class PlayVideoActivity extends AppCompatActivity{
         videoView.setVideoPath(videoPath);
         videoView.setMediaController(new MediaController(this));
         videoView.start();
-
+//        this.requestWindowFeature(Window.f);
+        this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
     }
+
 }
