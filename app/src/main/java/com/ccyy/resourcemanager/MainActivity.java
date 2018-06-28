@@ -139,6 +139,8 @@ public class MainActivity extends AppCompatActivity
 
         t = new T(getBaseContext());
 
+        folderChooser=new ChooseFolderDialog(MainActivity.this);
+
         initFile();
         setMenuList();
     }
@@ -631,26 +633,6 @@ public class MainActivity extends AppCompatActivity
         startActivity(details);
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            if (!isCheckPattern) {
-                if (!present_path.equals(rootPath)) {
-                    //返回上一级，当前目录present_path将作为之前访问的目录previous_path,
-                    // 因此，当前目录present_path应该是当前目录上一级的目录new File(present_path).getParent()
-                    previous_path = present_path;
-                    present_path = new File(present_path).getParent();
-                    getFileDir(present_path, true);
-                } else {
-                    AffirmDialog.exitApp(this);
-                }
-            } else {
-                setShowPattern();
-            }
-        }
-        return true;
-    }
-
     /**
      * 首次切换到文件选择状态
      *
@@ -681,4 +663,32 @@ public class MainActivity extends AppCompatActivity
         content_main_layout.addView(table_menu_layout_replace);
     }
 
+
+    private long firstTime=0;
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            if (!isCheckPattern) {
+                if (!present_path.equals(rootPath)) {
+                    //返回上一级，当前目录present_path将作为之前访问的目录previous_path,
+                    // 因此，当前目录present_path应该是当前目录上一级的目录new File(present_path).getParent()
+                    previous_path = present_path;
+                    present_path = new File(present_path).getParent();
+                    getFileDir(present_path, true);
+                } else {
+                    long secondTime=System.currentTimeMillis();
+                    if(secondTime-firstTime>1000){
+                        t.tips("再按一次退出");
+                        firstTime=secondTime;
+                    }
+                    else{
+                        System.exit(0);
+                    }
+                }
+            } else {
+                setShowPattern();
+            }
+        }
+        return true;
+    }
 }
