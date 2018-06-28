@@ -14,6 +14,8 @@ import com.ccyy.resourcemanager.MainActivity;
 import com.ccyy.resourcemanager.R;
 import com.ccyy.resourcemanager.ResourceManager;
 import com.ccyy.resourcemanager.music.PlayActivity;
+import com.ccyy.resourcemanager.photo.DisplayFullSizeImageActivity;
+import com.ccyy.resourcemanager.photo.ImageBean;
 import com.ccyy.resourcemanager.text.EditTextActivity;
 import com.ccyy.resourcemanager.tools.FileOperation;
 import com.ccyy.resourcemanager.tools.FileType;
@@ -375,7 +377,12 @@ public class FileTools {
         try {
             // 打开图像文件
             if (FileType.isImageFileType(path)) {
-                //todo 连接方法
+                Intent intent=new Intent(context, DisplayFullSizeImageActivity.class);
+                intent.putExtra(DisplayFullSizeImageActivity.PICTURE_PATH, new ImageBean(path,false));
+                String[] str_imgs={path};
+                intent.putExtra("img[]",str_imgs);
+                intent.putExtra("present_position",""+0);
+                context.startActivity(intent);
             }
 
             // 打开音频文件
