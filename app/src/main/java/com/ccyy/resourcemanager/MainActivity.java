@@ -397,23 +397,31 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void onClick(View v) {
             String path = folderChooser.present_path;
-            if (!path.equals(present_path)) {
-                for (String file : file_list) {
-                    if (FileTools.isSameFile_inDir(path, file)) {
-                        if (FileTools.cutFile(file, path)) {
-                            t.tips("剪切成功");
-                            fileAdapter.delData(file);
-                        } else {
-                            t.error("剪切失败，暂不支持剪切有文件的目录");
+            switch (v.getId()){
+                case R.id.choose_folder:{
+                    if (!path.equals(present_path)) {
+                        for (String file : file_list) {
+                            if (FileTools.isSameFile_inDir(path, file)) {
+                                if (FileTools.cutFile(file, path)) {
+                                    t.tips("剪切成功");
+                                    fileAdapter.delData(file);
+                                } else {
+                                    t.error("剪切失败，暂不支持剪切有文件的目录");
+                                }
+                            } else {
+                                t.tips("该目录下已有相同文件");
+                            }
                         }
+                        setShowPattern();
+                        folderChooser.dismiss();
                     } else {
-                        t.tips("该目录下已有相同文件");
+                        t.tips("目录未更改，请重新选择");
                     }
+                    break;
                 }
-                setShowPattern();
-                folderChooser.dismiss();
-            } else {
-                t.tips("目录未更改，请重新选择");
+                case R.id.choose_folder_cancel:{
+                    folderChooser.dismiss();
+                }
             }
 
         }
