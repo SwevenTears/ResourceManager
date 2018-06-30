@@ -694,7 +694,7 @@ public class MainActivity extends AppCompatActivity
                         firstTime=secondTime;
                     }
                     else{
-                        System.exit(0);
+                        finish();
                     }
                 }
             } else {

@@ -1,5 +1,7 @@
 package com.ccyy.resourcemanager.music;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -41,7 +43,6 @@ public class PlayActivity extends AppCompatActivity {
     private Button play_pauseButton;
     private TextView nowTime;
     private TextView endTime;
-    private TimeThread timeTread;
     private Spectrogram spectrogram;
     private FrameLayout music_frameLayout;
     private ArrayList<String> musicList;
@@ -106,7 +107,6 @@ public class PlayActivity extends AppCompatActivity {
         isRcycler = true;
         myPlayer = new MediaPlayer();
         myPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
-        timeTread = new TimeThread();
         musicImg.setAnimation(AnimationUtils.loadAnimation(this,R.drawable.rotate_anim));
 
         musicImg.startAnimation(AnimationUtils.loadAnimation(this,R.drawable.rotate_anim));
@@ -247,7 +247,8 @@ public class PlayActivity extends AppCompatActivity {
             myPlayer.prepare();
             myPlayer.start();
             endTime.setText("0" + (int) (myPlayer.getDuration() / 60000) + ":" + (myPlayer.getDuration() / 1000) % 60);
-            timeTread.start();
+//            timeTread.start();
+            new TimeThread().start();
         } catch (Exception e) {
             e.printStackTrace();
             Log.i("播放音乐","异常");
@@ -300,7 +301,7 @@ public class PlayActivity extends AppCompatActivity {
                     myPlayer.start();
                     setVisualizer();
                     play_pauseButton.setText("暂停");
-                    timeTread.start();
+                    new TimeThread().start();
                 }
 
             }
@@ -339,7 +340,7 @@ public class PlayActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 myPlayer.start();
-                timeTread.start();
+                new TimeThread().start();
                 play_pauseButton.setText("暂停");
                 int m = (int) myPlayer.getDuration() * progress / 100;
                 myPlayer.seekTo(m);
@@ -369,6 +370,11 @@ public class PlayActivity extends AppCompatActivity {
                     music_frameLayout.removeView(myRecycler);
                     music_frameLayout.addView(spectrogram);
                     isRcycler=false;
+                }
+                else{
+                    music_frameLayout.addView(myRecycler);
+                    music_frameLayout.removeView(spectrogram);
+                    isRcycler=true;
                 }
             }
         });
