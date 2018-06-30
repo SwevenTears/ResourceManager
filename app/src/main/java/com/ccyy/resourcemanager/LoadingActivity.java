@@ -165,7 +165,6 @@ public class LoadingActivity extends AppCompatActivity {
             String[] permission = {
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS,
                     Manifest.permission.RECORD_AUDIO
             };
             requestRunTimePermission(permission, mlistener);
