@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    android:id="@+id/content_main_layout"
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -11,170 +10,195 @@
     tools:showIn="@layout/app_bar_main"
     android:orientation="vertical">
 
-
-    <android.support.v7.widget.CardView
+    <RelativeLayout
+        android:id="@+id/top_panel"
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_gravity="center"
-        android:isScrollContainer="false">
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true">
 
-        <HorizontalScrollView
+        <android.support.v7.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="30dp"
             android:layout_gravity="center"
-            android:scrollbars="none">
+            android:isScrollContainer="false">
 
-            <LinearLayout
-                android:id="@+id/file_device"
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:layout_gravity="center"
+                android:scrollbars="none">
 
-            </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/file_device"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
 
-        </HorizontalScrollView>
+                </LinearLayout>
 
-    </android.support.v7.widget.CardView>
+            </HorizontalScrollView>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/file_list"
-        android:layout_width="match_parent"
-        android:layout_height="480dp">
+        </android.support.v7.widget.CardView>
 
-    </android.support.v7.widget.RecyclerView>
+    </RelativeLayout>
 
-    <TableLayout
-        android:id="@+id/file_menu_table_replace"
+    <RelativeLayout
+        android:id="@+id/center_panel"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:stretchColumns="0"
-        android:background="@drawable/background_file_menu">
+        android:layout_below="@+id/top_panel"
+        android:layout_above="@+id/bottom_panel">
 
-        <TableRow
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/file_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:gravity="center">
+            android:layout_height="match_parent">
 
-            <LinearLayout
+        </android.support.v7.widget.RecyclerView>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/bottom_panel"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
+
+        <TableLayout
+            android:id="@+id/file_menu_table_replace"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:stretchColumns="0"
+            android:background="@drawable/background_file_menu">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
                 android:gravity="center">
 
-                <Button
-                    android:id="@+id/create_new_folder"
-                    android:layout_width="55dp"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/add_folder" />
+                <LinearLayout
+                    android:gravity="center">
 
-            </LinearLayout>
+                    <Button
+                        android:id="@+id/create_new_folder"
+                        android:layout_width="55dp"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/add_folder" />
 
-        </TableRow>
+                </LinearLayout>
+
+            </TableRow>
 
 
 
-    </TableLayout>
+        </TableLayout>
 
-    <TableLayout
-        android:id="@+id/table_menu_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:stretchColumns="0,1,2,3,4"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:background="@drawable/background_file_menu">
-
-        <TableRow
-            android:id="@+id/file_menu_table"
+        <TableLayout
+            android:id="@+id/table_menu_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="40dp"
+            android:stretchColumns="0,1,2,3,4"
             android:layout_gravity="center"
-            android:gravity="center">
+            android:gravity="center"
+            android:background="@drawable/background_file_menu">
 
-            <LinearLayout android:orientation="horizontal">
+            <TableRow
+                android:id="@+id/file_menu_table"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center">
 
-                <TextView
-                    android:text="分享"
-                    android:id="@+id/file_menu_item_send"
-                    android:gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                <LinearLayout android:orientation="horizontal">
 
-            </LinearLayout>
+                    <TextView
+                        android:text="分享"
+                        android:id="@+id/file_menu_item_send"
+                        android:gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
 
-            <LinearLayout android:orientation="horizontal">
+                </LinearLayout>
 
-                <View
-                    android:layout_width="1dip"
-                    android:layout_height="wrap_content"
-                    android:background="#000000"
-                    android:layout_gravity="center_horizontal" />
+                <LinearLayout android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/file_menu_item_cut"
-                    android:gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:text="剪切" />
+                    <View
+                        android:layout_width="1dip"
+                        android:layout_height="wrap_content"
+                        android:background="#000000"
+                        android:layout_gravity="center_horizontal" />
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/file_menu_item_cut"
+                        android:gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="剪切" />
 
-            <LinearLayout android:orientation="horizontal">
+                </LinearLayout>
 
-                <View
-                    android:layout_width="1dip"
-                    android:layout_height="wrap_content"
-                    android:background="#000000"
-                    android:layout_gravity="center_horizontal" />
+                <LinearLayout android:orientation="horizontal">
 
-                <TextView
-                    android:text="复制"
-                    android:id="@+id/file_menu_item_copy"
-                    android:gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    <View
+                        android:layout_width="1dip"
+                        android:layout_height="wrap_content"
+                        android:background="#000000"
+                        android:layout_gravity="center_horizontal" />
 
-            </LinearLayout>
+                    <TextView
+                        android:text="复制"
+                        android:id="@+id/file_menu_item_copy"
+                        android:gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
 
-            <LinearLayout android:orientation="horizontal">
+                </LinearLayout>
 
-                <View
-                    android:layout_width="1dip"
-                    android:layout_height="wrap_content"
-                    android:background="#000000"
-                    android:layout_gravity="center_horizontal" />
+                <LinearLayout android:orientation="horizontal">
 
-                <TextView
-                    android:text="删除"
-                    android:id="@+id/file_menu_item_delete"
-                    android:gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    <View
+                        android:layout_width="1dip"
+                        android:layout_height="wrap_content"
+                        android:background="#000000"
+                        android:layout_gravity="center_horizontal" />
 
-            </LinearLayout>
+                    <TextView
+                        android:text="删除"
+                        android:id="@+id/file_menu_item_delete"
+                        android:gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
 
-            <LinearLayout
-                android:id="@+id/file_menu_more_layout"
-                android:orientation="horizontal">
+                </LinearLayout>
 
-                <View
-                    android:layout_width="1dip"
-                    android:layout_height="match_parent"
-                    android:background="#000000"
-                    android:layout_gravity="center_horizontal" />
+                <LinearLayout
+                    android:id="@+id/file_menu_more_layout"
+                    android:orientation="horizontal">
 
-                <TextView
-                    android:text="更多"
-                    android:id="@+id/file_menu_item_more"
-                    android:gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    <View
+                        android:layout_width="1dip"
+                        android:layout_height="match_parent"
+                        android:background="#000000"
+                        android:layout_gravity="center_horizontal" />
 
-            </LinearLayout>
+                    <TextView
+                        android:text="更多"
+                        android:id="@+id/file_menu_item_more"
+                        android:gravity="center"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </LinearLayout>
 
 
 
-        </TableRow>
+            </TableRow>
 
-    </TableLayout>
+        </TableLayout>
 
-</LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

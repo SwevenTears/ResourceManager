@@ -27,6 +27,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -38,7 +39,6 @@ import com.ccyy.resourcemanager.main.FileAdapter;
 import com.ccyy.resourcemanager.main.FileData;
 import com.ccyy.resourcemanager.main.FileDetailsActivity;
 import com.ccyy.resourcemanager.main.FileTools;
-import com.ccyy.resourcemanager.music.MusicActivity;
 import com.ccyy.resourcemanager.music.PlayActivity;
 import com.ccyy.resourcemanager.photo.PhotoActivity;
 import com.ccyy.resourcemanager.tools.AffirmDialog;
@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity
     private LinearLayoutManager linearLayoutManager;
     private LinearLayout show_device;
     public RecyclerView file_recycler;
-    private LinearLayout content_main_layout;
+    private RelativeLayout bottom_panel;
     private TableLayout table_menu_layout;
     private TableLayout table_menu_layout_replace;
 
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity
 
         t = new T(getBaseContext());
 
-        folderChooser=new ChooseFolderDialog(MainActivity.this);
+        folderChooser = new ChooseFolderDialog(MainActivity.this);
 
         initFile();
         setMenuList();
@@ -159,12 +159,12 @@ public class MainActivity extends AppCompatActivity
         file_menu_table = findViewById(R.id.file_menu_table);
         file_menu_more_layout = findViewById(R.id.file_menu_more_layout);
 
-        content_main_layout = findViewById(R.id.content_main_layout);
+        bottom_panel = findViewById(R.id.bottom_panel);
         table_menu_layout = findViewById(R.id.table_menu_layout);
         table_menu_layout_replace = findViewById(R.id.file_menu_table_replace);
 
         file_menu_table.removeView(file_menu_more_layout);
-        content_main_layout.removeView(table_menu_layout);
+        bottom_panel.removeView(table_menu_layout);
 
         setFile_More_Menu(file_menu_more);
 
@@ -397,8 +397,8 @@ public class MainActivity extends AppCompatActivity
         @Override
         public void onClick(View v) {
             String path = folderChooser.present_path;
-            switch (v.getId()){
-                case R.id.choose_folder:{
+            switch (v.getId()) {
+                case R.id.choose_folder: {
                     if (!path.equals(present_path)) {
                         for (String file : file_list) {
                             if (FileTools.isSameFile_inDir(path, file)) {
@@ -419,7 +419,7 @@ public class MainActivity extends AppCompatActivity
                     }
                     break;
                 }
-                case R.id.choose_folder_cancel:{
+                case R.id.choose_folder_cancel: {
                     folderChooser.dismiss();
                 }
             }
@@ -656,8 +656,8 @@ public class MainActivity extends AppCompatActivity
         file_menu_cut.setEnabled(true);
         file_menu_copy.setEnabled(true);
         file_menu_delete.setEnabled(true);
-        content_main_layout.removeView(table_menu_layout_replace);
-        content_main_layout.addView(table_menu_layout);
+        bottom_panel.removeView(table_menu_layout_replace);
+        bottom_panel.addView(table_menu_layout);
         file_menu_table.addView(file_menu_more_layout);
         file_list.add(fileData.get(position).getPath());
     }
@@ -671,12 +671,13 @@ public class MainActivity extends AppCompatActivity
         checkedItemCount = 0;
         file_list.clear();
         file_menu_table.removeView(file_menu_more_layout);
-        content_main_layout.removeView(table_menu_layout);
-        content_main_layout.addView(table_menu_layout_replace);
+        bottom_panel.removeView(table_menu_layout);
+        bottom_panel.addView(table_menu_layout_replace);
     }
 
 
-    private long firstTime=0;
+    private long firstTime = 0;
+
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
@@ -688,12 +689,11 @@ public class MainActivity extends AppCompatActivity
                     present_path = new File(present_path).getParent();
                     getFileDir(present_path, true);
                 } else {
-                    long secondTime=System.currentTimeMillis();
-                    if(secondTime-firstTime>1000){
+                    long secondTime = System.currentTimeMillis();
+                    if (secondTime - firstTime > 1000) {
                         t.tips("再按一次退出");
-                        firstTime=secondTime;
-                    }
-                    else{
+                        firstTime = secondTime;
+                    } else {
                         finish();
                     }
                 }
