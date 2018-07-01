@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -67,8 +68,10 @@ public class ChooseFolderDialog extends Dialog {
 
         Window window = getWindow();
         WindowManager.LayoutParams params = window.getAttributes();//获取dialog的长宽
-        params.width = 400;
-        params.height = 900;
+        WindowManager m = activity.getWindowManager();
+        Display d = m.getDefaultDisplay(); // 获取屏幕宽、高用
+        params.width = (int) (d.getWidth() * 0.6);
+        params.height = (int) (d.getHeight() * 0.6);
 
         btn_choose.setOnClickListener(mOnclick);
         btn_cancel.setOnClickListener(mOnclick);

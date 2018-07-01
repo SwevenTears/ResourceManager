@@ -253,8 +253,7 @@ public class EditTextActivity extends AppCompatActivity implements PopupMenu.OnM
     private void previous_step(DialogInterface.OnClickListener positiveListener
             , DialogInterface.OnClickListener NegativeListener) {
         if (editText.getText().toString().equals(OLD_FILE_DATA)) {
-            editText.setFocusable(false);
-            editText.setFocusableInTouchMode(false);
+            setEditable_OF_EditText(false);
             getSupportActionBar().setTitle(TXT_name);
         } else {
             dialogTip(EditTextActivity.this, positiveListener, NegativeListener);
@@ -401,8 +400,13 @@ public class EditTextActivity extends AppCompatActivity implements PopupMenu.OnM
      */
     private boolean hasClipboard() {
         ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-        ClipData data = clipboardManager.getPrimaryClip();
-        return data.getItemCount() > 0;
+        ClipData data = null;
+        try {
+            data = clipboardManager.getPrimaryClip();
+            return data.getItemCount() > 0;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**

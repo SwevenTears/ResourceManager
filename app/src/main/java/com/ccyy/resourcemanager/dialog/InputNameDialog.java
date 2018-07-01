@@ -31,7 +31,7 @@ public class InputNameDialog extends Dialog {
     private String default_name;
 
     public InputNameDialog(Activity activity, View.OnClickListener clickListener, String default_name) {
-        super(activity, R.style.AppTheme);
+        super(activity);
         this.activity = activity;
         this.mClickListener = clickListener;
         this.default_name = default_name;
@@ -48,9 +48,9 @@ public class InputNameDialog extends Dialog {
         text_name.setText(default_name);
 
         if (default_name.equals("新建文件夹")) {
-            text_name.setHint("文件夹名称：如，folder");
+            text_name.setHint("文件夹名称,如:folder");
         } else {
-            text_name.setHint("文件名称，如：file.type");
+            text_name.setHint("文件名称,如:file.type");
         }
 
         /*
@@ -63,7 +63,6 @@ public class InputNameDialog extends Dialog {
         Display d = m.getDefaultDisplay(); // 获取屏幕宽、高用
         WindowManager.LayoutParams p = dialogWindow.getAttributes(); // 获取对话框当前的参数值
         p.width = (int) (d.getWidth() * 0.6);
-        p.height = 240;
         dialogWindow.setAttributes(p);
 
         // 根据id在布局中找到控件对象
@@ -75,6 +74,8 @@ public class InputNameDialog extends Dialog {
         btn_cancel.setOnClickListener(mClickListener);
 
         this.setCancelable(true);
+
+        setTitle("请输入文件名");
 
         text_name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
