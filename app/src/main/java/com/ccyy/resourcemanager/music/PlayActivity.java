@@ -366,12 +366,12 @@ public class PlayActivity extends AppCompatActivity {
         musicImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isRcycler){
+                if(isRcycler && intent.getStringExtra("path") == null){
                     music_frameLayout.removeView(myRecycler);
                     music_frameLayout.addView(spectrogram);
                     isRcycler=false;
                 }
-                else{
+                else if(!isRcycler && intent.getStringExtra("path") == null){
                     music_frameLayout.addView(myRecycler);
                     music_frameLayout.removeView(spectrogram);
                     isRcycler=true;
