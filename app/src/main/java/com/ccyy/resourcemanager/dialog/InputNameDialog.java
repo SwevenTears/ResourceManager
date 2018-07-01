@@ -48,9 +48,9 @@ public class InputNameDialog extends Dialog {
         text_name.setText(default_name);
 
         if (default_name.equals("新建文件夹")) {
-            text_name.setHint("文件夹名称：如，folder");
+            text_name.setHint("文件夹名称,如:folder");
         } else {
-            text_name.setHint("文件名称，如：file.type");
+            text_name.setHint("文件名称,如:file.type");
         }
 
         /*
@@ -74,6 +74,8 @@ public class InputNameDialog extends Dialog {
         btn_cancel.setOnClickListener(mClickListener);
 
         this.setCancelable(true);
+
+        setTitle("请输入文件名");
 
         text_name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
