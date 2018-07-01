@@ -103,7 +103,17 @@ public class ChooseFolderDialog extends Dialog {
     private void loadItem(ArrayList<FileData> folders, boolean isParent) {
 
         show_folder_device.removeAllViews();
-        new DeviceShow(activity, show_folder_device, rootPath, present_path);
+        new DeviceShow
+                (activity, show_folder_device, rootPath, present_path)
+                .setOnClickItem(new DeviceShow.onClickItem() {
+            @Override
+            public void onClick(String jump_path) {
+                if (!present_path.equals(jump_path)) {
+                    present_path=jump_path;
+                    getFolderDir(present_path, false);
+                }
+            }
+        });
 
         if (isParent) {
             int position = FileTools.getPositionInParentFolder(folders, new File(previous_path));

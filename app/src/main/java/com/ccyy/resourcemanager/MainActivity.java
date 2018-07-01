@@ -526,8 +526,10 @@ public class MainActivity extends AppCompatActivity
         deviceShow.setOnClickItem(new DeviceShow.onClickItem() {
             @Override
             public void onClick(String jump_path) {
-                present_path=jump_path;
-                getFileDir(present_path,false);
+                if (!present_path.equals(jump_path)) {
+                    present_path=jump_path;
+                    getFileDir(present_path, false);
+                }
             }
         });
         if (isParent) {
