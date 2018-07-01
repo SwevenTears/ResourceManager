@@ -400,8 +400,13 @@ public class EditTextActivity extends AppCompatActivity implements PopupMenu.OnM
      */
     private boolean hasClipboard() {
         ClipboardManager clipboardManager = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-        ClipData data = clipboardManager.getPrimaryClip();
-        return data.getItemCount() > 0;
+        ClipData data = null;
+        try {
+            data = clipboardManager.getPrimaryClip();
+            return data.getItemCount() > 0;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**
