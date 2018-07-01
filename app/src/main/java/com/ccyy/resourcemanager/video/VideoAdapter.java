@@ -33,7 +33,8 @@ import java.util.List;
         if (mContext == null) {
             mContext = parent.getContext();
         }
-        View view = LayoutInflater.from(mContext).inflate(R.layout.activity_video_item, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.activity_video_item,
+                parent, false);
         ViewHolder holder = new ViewHolder(view);
         return holder;
     }
