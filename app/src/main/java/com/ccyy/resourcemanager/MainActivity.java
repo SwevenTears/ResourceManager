@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -24,12 +25,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.ccyy.resourcemanager.dialog.ChooseFolderDialog;
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity
     public RecyclerView file_recycler;
     private RelativeLayout bottom_panel;
     private TableLayout table_menu_layout;
-    private TableLayout table_menu_layout_replace;
+    private LinearLayout table_menu_layout_replace;
 
     private String rootPath = FileOperation.getMobilePath();
     private String present_path;
@@ -107,17 +107,17 @@ public class MainActivity extends AppCompatActivity
      * 当前文件管理是浏览模式，还是选择模式，true为选择模式
      */
     private boolean isCheckPattern = false;
-    private int checkedItemCount = 0;
+    private int selectItemCount = 0;
     private ArrayList<String> file_list;
 
     private PopupMenu popupMenu_more;
-    private TableRow file_menu_table;
-    private LinearLayout file_menu_more_layout;
 
-    private TextView file_menu_send;
-    private TextView file_menu_cut;
-    private TextView file_menu_copy;
-    private TextView file_menu_delete;
+    private LinearLayout file_menu_send;
+    private LinearLayout file_menu_cut;
+    private LinearLayout file_menu_copy;
+    private LinearLayout file_menu_delete;
+    private LinearLayout file_menu_more;
+    private ImageView create_new_folder;
 
     private InputNameDialog input_FolderName_ByCreateFolder;
     private InputNameDialog input_FileName_ByReName;
@@ -143,28 +143,33 @@ public class MainActivity extends AppCompatActivity
         folderChooser = new ChooseFolderDialog(MainActivity.this);
 
         initFile();
-        setMenuList();
+        setBottomMenuId();
     }
 
     /**
      * 设置下部菜单栏
      */
-    private void setMenuList() {
+    private void setBottomMenuId() {
         file_menu_send = findViewById(R.id.file_menu_item_send);
         file_menu_cut = findViewById(R.id.file_menu_item_cut);
         file_menu_copy = findViewById(R.id.file_menu_item_copy);
         file_menu_delete = findViewById(R.id.file_menu_item_delete);
-        Button create_new_folder = findViewById(R.id.create_new_folder);
-        TextView file_menu_more = findViewById(R.id.file_menu_item_more);
-        file_menu_table = findViewById(R.id.file_menu_table);
-        file_menu_more_layout = findViewById(R.id.file_menu_more_layout);
+        create_new_folder = findViewById(R.id.create_new_folder);
+        file_menu_more = findViewById(R.id.file_menu_item_more);
 
         bottom_panel = findViewById(R.id.bottom_panel);
         table_menu_layout = findViewById(R.id.table_menu_layout);
         table_menu_layout_replace = findViewById(R.id.file_menu_table_replace);
 
-        file_menu_table.removeView(file_menu_more_layout);
         bottom_panel.removeView(table_menu_layout);
+
+
+
+        setBottomMenuListener();
+
+    }
+
+    private void setBottomMenuListener() {
 
         setFile_More_Menu(file_menu_more);
 
@@ -204,7 +209,6 @@ public class MainActivity extends AppCompatActivity
                 createNewFolder();
             }
         });
-
     }
 
     /**
@@ -212,7 +216,7 @@ public class MainActivity extends AppCompatActivity
      *
      * @param file_menu_more “更多”菜单栏
      */
-    private void setFile_More_Menu(TextView file_menu_more) {
+    private void setFile_More_Menu(LinearLayout file_menu_more) {
         popupMenu_more = new PopupMenu(this, file_menu_more);
         Menu menu_more = popupMenu_more.getMenu();
         MenuInflater menuInflater = getMenuInflater();
@@ -528,13 +532,13 @@ public class MainActivity extends AppCompatActivity
         fileAdapter = new FileAdapter(MainActivity.this, data);
         file_recycler.setAdapter(fileAdapter);
 
-        addListener();
+        addAdapterListener();
     }
 
     /**
      * 为适配器添加监听事件
      */
-    private void addListener() {
+    private void addAdapterListener() {
         fileAdapter.setOnClickItem(new FileAdapter.onClickItem() {
             @Override
             public void onClick(ArrayList<FileData> fileData, int position) {
@@ -576,33 +580,19 @@ public class MainActivity extends AppCompatActivity
             if (isChecked) {
                 fileAdapter.delCheckedItem(position);
                 file_list.remove(fileData.get(position).getPath());
-                checkedItemCount--;
+                selectItemCount--;
                 for (String path : file_list) {
-                    Log.d("选中的文件" + checkedItemCount + "个", path);
+                    Log.d("选中的文件" + selectItemCount + "个", path);
                 }
             } else {
                 fileAdapter.addCheckedItem(position);
                 file_list.add(fileData.get(position).getPath());
-                checkedItemCount++;
+                selectItemCount++;
                 for (String path : file_list) {
-                    Log.d("选中的文件" + checkedItemCount + "个", path);
+                    Log.d("选中的文件" + selectItemCount + "个", path);
                 }
             }
-            if (checkedItemCount == 0) {
-                file_menu_send.setEnabled(false);
-                file_menu_cut.setEnabled(false);
-                file_menu_copy.setEnabled(false);
-                file_menu_delete.setEnabled(false);
-                file_menu_table.removeView(file_menu_more_layout);
-            } else if (checkedItemCount == 1) {
-                file_menu_send.setEnabled(true);
-                file_menu_cut.setEnabled(true);
-                file_menu_copy.setEnabled(true);
-                file_menu_delete.setEnabled(true);
-                file_menu_table.addView(file_menu_more_layout);
-            } else if (checkedItemCount > 1) {
-                file_menu_table.removeView(file_menu_more_layout);
-            }
+            setMenuEnable(selectItemCount);
         }
 
     }
@@ -651,14 +641,14 @@ public class MainActivity extends AppCompatActivity
         file_list = new ArrayList<>();
         fileAdapter.showCheckBox(position);
         isCheckPattern = true;
-        checkedItemCount = 1;
+        selectItemCount = 1;
         file_menu_send.setEnabled(true);
         file_menu_cut.setEnabled(true);
         file_menu_copy.setEnabled(true);
         file_menu_delete.setEnabled(true);
+        file_menu_more.setEnabled(true);
         bottom_panel.removeView(table_menu_layout_replace);
         bottom_panel.addView(table_menu_layout);
-        file_menu_table.addView(file_menu_more_layout);
         file_list.add(fileData.get(position).getPath());
     }
 
@@ -668,9 +658,8 @@ public class MainActivity extends AppCompatActivity
     private void setShowPattern() {
         isCheckPattern = false;
         fileAdapter.hiddenCheckBox();
-        checkedItemCount = 0;
+        selectItemCount = 0;
         file_list.clear();
-        file_menu_table.removeView(file_menu_more_layout);
         bottom_panel.removeView(table_menu_layout);
         bottom_panel.addView(table_menu_layout_replace);
     }
@@ -702,5 +691,71 @@ public class MainActivity extends AppCompatActivity
             }
         }
         return true;
+    }
+
+    private void setMenuEnable(int selectedCount){
+        TextView send_text=findViewById(R.id.file_menu_item_send_text);
+        TextView cut_text=findViewById(R.id.file_menu_item_cut_text);
+        TextView copy_text=findViewById(R.id.file_menu_item_copy_text);
+        TextView delete_text=findViewById(R.id.file_menu_item_delete_text);
+        TextView more_text=findViewById(R.id.file_menu_item_more_text);
+
+        ImageView send_image=findViewById(R.id.file_menu_item_send_image);
+        ImageView cut_image=findViewById(R.id.file_menu_item_cut_image);
+        ImageView copy_image=findViewById(R.id.file_menu_item_copy_image);
+        ImageView delete_image=findViewById(R.id.file_menu_item_delete_image);
+        ImageView more_image=findViewById(R.id.file_menu_item_more_image);
+        if (selectedCount==0){
+            file_menu_send.setEnabled(false);
+            file_menu_cut.setEnabled(false);
+            file_menu_copy.setEnabled(false);
+            file_menu_delete.setEnabled(false);
+            file_menu_more.setEnabled(false);
+            send_text.setTextColor(Color.GRAY);
+            cut_text.setTextColor(Color.GRAY);
+            copy_text.setTextColor(Color.GRAY);
+            delete_text.setTextColor(Color.GRAY);
+            more_text.setTextColor(Color.GRAY);
+
+            copy_image.setImageResource(R.drawable.ic_file_menu_copy_unfocus);
+            delete_image.setImageResource(R.drawable.ic_file_menu_delete_unfocus);
+            more_image.setImageResource(R.drawable.ic_file_menu_more_unfocus);
+        }
+        else if (selectedCount==1){
+            file_menu_send.setEnabled(true);
+            file_menu_cut.setEnabled(true);
+            file_menu_copy.setEnabled(true);
+            file_menu_delete.setEnabled(true);
+            file_menu_more.setEnabled(true);
+            send_text.setTextColor(Color.BLACK);
+            cut_text.setTextColor(Color.BLACK);
+            copy_text.setTextColor(Color.BLACK);
+            delete_text.setTextColor(Color.BLACK);
+            more_text.setTextColor(Color.BLACK);
+
+            send_image.setImageResource(R.drawable.ic_menu_share);
+            cut_image.setImageResource(R.drawable.ic_file_menu_cut);
+            copy_image.setImageResource(R.drawable.ic_file_menu_copy);
+            delete_image.setImageResource(R.drawable.ic_file_menu_delete);
+            more_image.setImageResource(R.drawable.ic_file_menu_more);
+        }
+        else{
+            file_menu_send.setEnabled(true);
+            file_menu_cut.setEnabled(true);
+            file_menu_copy.setEnabled(true);
+            file_menu_delete.setEnabled(true);
+            file_menu_more.setEnabled(false);
+            send_text.setTextColor(Color.BLACK);
+            cut_text.setTextColor(Color.BLACK);
+            copy_text.setTextColor(Color.BLACK);
+            delete_text.setTextColor(Color.BLACK);
+            more_text.setTextColor(Color.GRAY);
+
+            send_image.setImageResource(R.drawable.ic_menu_share);
+            cut_image.setImageResource(R.drawable.ic_file_menu_cut);
+            copy_image.setImageResource(R.drawable.ic_file_menu_copy);
+            delete_image.setImageResource(R.drawable.ic_file_menu_delete);
+            more_image.setImageResource(R.drawable.ic_file_menu_more_unfocus);
+        }
     }
 }
