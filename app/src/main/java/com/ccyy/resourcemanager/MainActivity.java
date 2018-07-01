@@ -164,7 +164,6 @@ public class MainActivity extends AppCompatActivity
         bottom_panel.removeView(table_menu_layout);
 
 
-
         setBottomMenuListener();
 
     }
@@ -693,19 +692,19 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void setMenuEnable(int selectedCount){
-        TextView share_text=findViewById(R.id.file_menu_item_send_text);
-        TextView cut_text=findViewById(R.id.file_menu_item_cut_text);
-        TextView copy_text=findViewById(R.id.file_menu_item_copy_text);
-        TextView delete_text=findViewById(R.id.file_menu_item_delete_text);
-        TextView more_text=findViewById(R.id.file_menu_item_more_text);
+    private void setMenuEnable(int selectedCount) {
+        TextView share_text = findViewById(R.id.file_menu_item_send_text);
+        TextView cut_text = findViewById(R.id.file_menu_item_cut_text);
+        TextView copy_text = findViewById(R.id.file_menu_item_copy_text);
+        TextView delete_text = findViewById(R.id.file_menu_item_delete_text);
+        TextView more_text = findViewById(R.id.file_menu_item_more_text);
 
-        ImageView share_image=findViewById(R.id.file_menu_item_send_image);
-        ImageView cut_image=findViewById(R.id.file_menu_item_cut_image);
-        ImageView copy_image=findViewById(R.id.file_menu_item_copy_image);
-        ImageView delete_image=findViewById(R.id.file_menu_item_delete_image);
-        ImageView more_image=findViewById(R.id.file_menu_item_more_image);
-        if (selectedCount==0){
+        ImageView share_image = findViewById(R.id.file_menu_item_send_image);
+        ImageView cut_image = findViewById(R.id.file_menu_item_cut_image);
+        ImageView copy_image = findViewById(R.id.file_menu_item_copy_image);
+        ImageView delete_image = findViewById(R.id.file_menu_item_delete_image);
+        ImageView more_image = findViewById(R.id.file_menu_item_more_image);
+        if (selectedCount == 0) {
             file_menu_share.setEnabled(false);
             file_menu_cut.setEnabled(false);
             file_menu_copy.setEnabled(false);
@@ -722,8 +721,7 @@ public class MainActivity extends AppCompatActivity
             copy_image.setImageResource(R.drawable.ic_file_menu_copy_unfocus);
             delete_image.setImageResource(R.drawable.ic_file_menu_delete_unfocus);
             more_image.setImageResource(R.drawable.ic_file_menu_more_unfocus);
-        }
-        else if (selectedCount==1){
+        } else if (selectedCount == 1) {
             file_menu_share.setEnabled(true);
             file_menu_cut.setEnabled(true);
             file_menu_copy.setEnabled(true);
@@ -740,8 +738,7 @@ public class MainActivity extends AppCompatActivity
             copy_image.setImageResource(R.drawable.ic_file_menu_copy);
             delete_image.setImageResource(R.drawable.ic_file_menu_delete);
             more_image.setImageResource(R.drawable.ic_file_menu_more);
-        }
-        else{
+        } else {
             file_menu_share.setEnabled(true);
             file_menu_cut.setEnabled(true);
             file_menu_copy.setEnabled(true);
