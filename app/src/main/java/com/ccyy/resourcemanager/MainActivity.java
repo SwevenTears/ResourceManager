@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity
 
     private PopupMenu popupMenu_more;
 
-    private LinearLayout file_menu_send;
+    private LinearLayout file_menu_share;
     private LinearLayout file_menu_cut;
     private LinearLayout file_menu_copy;
     private LinearLayout file_menu_delete;
@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity
      * 设置下部菜单栏
      */
     private void setBottomMenuId() {
-        file_menu_send = findViewById(R.id.file_menu_item_send);
+        file_menu_share = findViewById(R.id.file_menu_item_share);
         file_menu_cut = findViewById(R.id.file_menu_item_cut);
         file_menu_copy = findViewById(R.id.file_menu_item_copy);
         file_menu_delete = findViewById(R.id.file_menu_item_delete);
@@ -173,7 +173,7 @@ public class MainActivity extends AppCompatActivity
 
         setFile_More_Menu(file_menu_more);
 
-        file_menu_send.setOnClickListener(new View.OnClickListener() {
+        file_menu_share.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 shareFiles();
@@ -348,52 +348,6 @@ public class MainActivity extends AppCompatActivity
         }
     };
 
-
-    /**
-     * 新建文件夹
-     */
-    private void createNewFolder() {
-        String initialize = "新建文件夹";
-        input_FolderName_ByCreateFolder =
-                new InputNameDialog(MainActivity.this, createFolderListener, initialize);
-        input_FolderName_ByCreateFolder.show();
-    }
-
-    /**
-     * 分享文件（夹）单个或多个
-     */
-    private void shareFiles() {
-        ArrayList<Uri> uris = new ArrayList<>();
-        for (int i = 0; i < file_list.size(); i++) {
-            File file = new File(file_list.get(i));
-            Uri u = Uri.fromFile(file);
-            uris.add(u);
-        }
-        boolean multiple = uris.size() > 1;
-        Intent intent = new Intent(multiple ? android.content.Intent.ACTION_SEND_MULTIPLE
-                : android.content.Intent.ACTION_SEND);
-
-        if (multiple) {
-            intent.setType("*/*");
-            intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
-        } else {
-            intent.setType("*/*");
-            intent.putExtra(Intent.EXTRA_STREAM, uris.get(0));
-        }
-        startActivity(Intent.createChooser(intent, "分享到"));
-        setShowPattern();
-    }
-
-    /**
-     * 文件重命名时的监听事件
-     */
-    private void rename() {
-        String path = file_list.get(0);
-        String name = new File(path).getName();
-        input_FileName_ByReName = new InputNameDialog(MainActivity.this, rename_listener, name);
-        input_FileName_ByReName.show();
-    }
-
     /**
      * 在选择文件夹后，对文件进行剪切时发生的监听事件
      */
@@ -462,6 +416,52 @@ public class MainActivity extends AppCompatActivity
             }
         }
     };
+
+
+    /**
+     * 新建文件夹
+     */
+    private void createNewFolder() {
+        String initialize = "新建文件夹";
+        input_FolderName_ByCreateFolder =
+                new InputNameDialog(MainActivity.this, createFolderListener, initialize);
+        input_FolderName_ByCreateFolder.show();
+    }
+
+    /**
+     * 分享文件（夹）单个或多个
+     */
+    private void shareFiles() {
+        ArrayList<Uri> uris = new ArrayList<>();
+        for (int i = 0; i < file_list.size(); i++) {
+            File file = new File(file_list.get(i));
+            Uri u = Uri.fromFile(file);
+            uris.add(u);
+        }
+        boolean multiple = uris.size() > 1;
+        Intent intent = new Intent(multiple ? android.content.Intent.ACTION_SEND_MULTIPLE
+                : android.content.Intent.ACTION_SEND);
+
+        if (multiple) {
+            intent.setType("*/*");
+            intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris);
+        } else {
+            intent.setType("*/*");
+            intent.putExtra(Intent.EXTRA_STREAM, uris.get(0));
+        }
+        startActivity(Intent.createChooser(intent, "分享到"));
+        setShowPattern();
+    }
+
+    /**
+     * 文件重命名时的监听事件
+     */
+    private void rename() {
+        String path = file_list.get(0);
+        String name = new File(path).getName();
+        input_FileName_ByReName = new InputNameDialog(MainActivity.this, rename_listener, name);
+        input_FileName_ByReName.show();
+    }
 
 
     /**
@@ -548,7 +548,7 @@ public class MainActivity extends AppCompatActivity
                 if (!isCheckPattern) {
                     openDirectory_or_openFile(path, name);
                 } else {
-                    selectFiles(fileData, position, name);
+                    selectFilesListener(fileData, position, name);
                 }
 
             }
@@ -574,7 +574,7 @@ public class MainActivity extends AppCompatActivity
      * @param position 选择文件的当前 position
      * @param name     获取文件结构时定义的文件名
      */
-    private void selectFiles(ArrayList<FileData> fileData, int position, String name) {
+    private void selectFilesListener(ArrayList<FileData> fileData, int position, String name) {
         boolean isChecked = fileData.get(position).isCheck();
         if (!name.equals("<<previous>>")) {
             if (isChecked) {
@@ -642,7 +642,7 @@ public class MainActivity extends AppCompatActivity
         fileAdapter.showCheckBox(position);
         isCheckPattern = true;
         selectItemCount = 1;
-        file_menu_send.setEnabled(true);
+        file_menu_share.setEnabled(true);
         file_menu_cut.setEnabled(true);
         file_menu_copy.setEnabled(true);
         file_menu_delete.setEnabled(true);
@@ -694,64 +694,66 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setMenuEnable(int selectedCount){
-        TextView send_text=findViewById(R.id.file_menu_item_send_text);
+        TextView share_text=findViewById(R.id.file_menu_item_send_text);
         TextView cut_text=findViewById(R.id.file_menu_item_cut_text);
         TextView copy_text=findViewById(R.id.file_menu_item_copy_text);
         TextView delete_text=findViewById(R.id.file_menu_item_delete_text);
         TextView more_text=findViewById(R.id.file_menu_item_more_text);
 
-        ImageView send_image=findViewById(R.id.file_menu_item_send_image);
+        ImageView share_image=findViewById(R.id.file_menu_item_send_image);
         ImageView cut_image=findViewById(R.id.file_menu_item_cut_image);
         ImageView copy_image=findViewById(R.id.file_menu_item_copy_image);
         ImageView delete_image=findViewById(R.id.file_menu_item_delete_image);
         ImageView more_image=findViewById(R.id.file_menu_item_more_image);
         if (selectedCount==0){
-            file_menu_send.setEnabled(false);
+            file_menu_share.setEnabled(false);
             file_menu_cut.setEnabled(false);
             file_menu_copy.setEnabled(false);
             file_menu_delete.setEnabled(false);
             file_menu_more.setEnabled(false);
-            send_text.setTextColor(Color.GRAY);
+            share_text.setTextColor(Color.GRAY);
             cut_text.setTextColor(Color.GRAY);
             copy_text.setTextColor(Color.GRAY);
             delete_text.setTextColor(Color.GRAY);
             more_text.setTextColor(Color.GRAY);
 
+            share_image.setImageResource(R.drawable.ic_file_menu_share_unfocus);
+            cut_image.setImageResource(R.drawable.ic_file_menu_cut_unfocus);
             copy_image.setImageResource(R.drawable.ic_file_menu_copy_unfocus);
             delete_image.setImageResource(R.drawable.ic_file_menu_delete_unfocus);
             more_image.setImageResource(R.drawable.ic_file_menu_more_unfocus);
         }
         else if (selectedCount==1){
-            file_menu_send.setEnabled(true);
+            file_menu_share.setEnabled(true);
             file_menu_cut.setEnabled(true);
             file_menu_copy.setEnabled(true);
             file_menu_delete.setEnabled(true);
             file_menu_more.setEnabled(true);
-            send_text.setTextColor(Color.BLACK);
+            share_text.setTextColor(Color.BLACK);
             cut_text.setTextColor(Color.BLACK);
             copy_text.setTextColor(Color.BLACK);
             delete_text.setTextColor(Color.BLACK);
             more_text.setTextColor(Color.BLACK);
 
-            send_image.setImageResource(R.drawable.ic_menu_share);
+            share_image.setImageResource(R.drawable.ic_file_menu_share);
             cut_image.setImageResource(R.drawable.ic_file_menu_cut);
             copy_image.setImageResource(R.drawable.ic_file_menu_copy);
             delete_image.setImageResource(R.drawable.ic_file_menu_delete);
             more_image.setImageResource(R.drawable.ic_file_menu_more);
         }
         else{
-            file_menu_send.setEnabled(true);
+            file_menu_share.setEnabled(true);
             file_menu_cut.setEnabled(true);
             file_menu_copy.setEnabled(true);
             file_menu_delete.setEnabled(true);
             file_menu_more.setEnabled(false);
-            send_text.setTextColor(Color.BLACK);
+            share_text.setTextColor(Color.BLACK);
             cut_text.setTextColor(Color.BLACK);
             copy_text.setTextColor(Color.BLACK);
             delete_text.setTextColor(Color.BLACK);
             more_text.setTextColor(Color.GRAY);
 
-            send_image.setImageResource(R.drawable.ic_menu_share);
+            share_image.setImageResource(R.drawable.ic_file_menu_share);
             cut_image.setImageResource(R.drawable.ic_file_menu_cut);
             copy_image.setImageResource(R.drawable.ic_file_menu_copy);
             delete_image.setImageResource(R.drawable.ic_file_menu_delete);
