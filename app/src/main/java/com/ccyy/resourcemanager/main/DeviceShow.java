@@ -1,17 +1,9 @@
 package com.ccyy.resourcemanager.main;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
-import com.ccyy.resourcemanager.MainActivity;
-import com.ccyy.resourcemanager.R;
-import com.ccyy.resourcemanager.tools.T;
-
-import java.io.File;
 
 /**
  * Created by Sweven on 2018/6/14.
@@ -21,7 +13,7 @@ public class DeviceShow {
 
     private String rootPath;
 
-    private static T t;
+    private onClickItem mListener;
 
     /**
      * @param context      MainActivity.this
@@ -45,13 +37,10 @@ public class DeviceShow {
                 link_btn.setText(temp + ">");
             else
                 link_btn.setText(temp);
-            link_btn.setOnClickListener(new Jump_path(context, temp, i, parent_path_shows));
+            link_btn.setOnClickListener(new Jump_path(i, parent_path_shows));
             show_device.addView(link_btn);
             i++;
         }
-
-        t = new T(context);
-
     }
 
     /**
@@ -59,11 +48,9 @@ public class DeviceShow {
      */
     class Jump_path implements View.OnClickListener {
 
-        private Context context;
         private String jump_path;
 
-        public Jump_path(Context context, String temp, int position, String files[]) {
-            this.context = context;
+        public Jump_path(int position, String files[]) {
             for (int i = 0; i <= position; i++) {
                 if (i == 0)
                     jump_path = files[i];
@@ -75,7 +62,17 @@ public class DeviceShow {
 
         @Override
         public void onClick(View v) {
-            t.tips(jump_path);
+            if (mListener != null) {
+                mListener.onClick(jump_path);
+            }
         }
+    }
+
+    public interface onClickItem {
+        void onClick(String jump_path);
+    }
+
+    public void setOnClickItem(onClickItem onClickItem) {
+        this.mListener = onClickItem;
     }
 }

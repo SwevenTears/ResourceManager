@@ -2,6 +2,7 @@ package com.ccyy.resourcemanager;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -520,8 +521,15 @@ public class MainActivity extends AppCompatActivity
 
 
         show_device.removeAllViews();
-        new DeviceShow(MainActivity.this, show_device, rootPath, present_path);
-
+        DeviceShow deviceShow = new DeviceShow
+                (MainActivity.this, show_device, rootPath, present_path);
+        deviceShow.setOnClickItem(new DeviceShow.onClickItem() {
+            @Override
+            public void onClick(String jump_path) {
+                present_path=jump_path;
+                getFileDir(present_path,false);
+            }
+        });
         if (isParent) {
             int position = FileTools.getPositionInParentFolder(data, new File(previous_path));
             // 通过 LayoutManager 的 srcollToPositionWithOffset 方法进行定位
