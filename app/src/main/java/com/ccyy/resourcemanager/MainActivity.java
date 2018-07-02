@@ -500,11 +500,6 @@ public class MainActivity extends AppCompatActivity
      */
     public void initFile() {
 
-        //初始化APP的临时文件储存位置、APP配置文件位置
-        ResourceManager.createAppPath(ResourceManager.App_Path);
-        ResourceManager.createAppPath(ResourceManager.App_Temp_Image_Path);
-        ResourceManager.createAppPath(ResourceManager.App_Temp_Video_Image_Path);
-
         file_recycler = findViewById(R.id.file_list);
         linearLayoutManager = new LinearLayoutManager(this);
         file_recycler.setLayoutManager(linearLayoutManager);
