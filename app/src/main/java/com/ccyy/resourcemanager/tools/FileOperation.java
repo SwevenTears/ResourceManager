@@ -1,12 +1,11 @@
 package com.ccyy.resourcemanager.tools;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.storage.StorageManager;
 import android.util.Log;
 
 import com.ccyy.resourcemanager.ResourceManager;
@@ -16,6 +15,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -92,16 +93,51 @@ public class FileOperation {
     }
 
     /**
-     * @return 获取SD卡位置
+     * @return 获取一个外置SD卡位置
      */
-    public static String getSDPath() {
-        File sdDir = null;
-        boolean sdCardExist = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED);//判断sd卡是否存在
-        if (sdCardExist) {
-            sdDir = Environment.getExternalStorageDirectory();//获取SD卡根目录
+    public static String[] getExtraSDPath(Context context) {
+        String[] str = FileOperation.getVolumePaths(context);
+        ArrayList<String> dirList=new ArrayList<>();
+        for (String dir : str) {
+            File file = new File(dir);
+            long total_size = file.getTotalSpace();
+            if (total_size>0){
+                dirList.add(dir);
+            }
         }
-        assert sdDir != null;
-        return sdDir.toString();
+        ArrayList<String> extraSDs=new ArrayList<>();
+        for (String dir:dirList){
+            if (!dir.equals(FileOperation.getMobilePath())){
+                extraSDs.add(dir);
+            }
+        }
+        if (!extraSDs.isEmpty()) {
+            String[] dirs=new String[extraSDs.size()];
+            for (int i=0;i<extraSDs.size();i++){
+                dirs[i]=extraSDs.get(i);
+            }
+            return dirs;
+        }
+        return new String[]{"<<no_find>>"};
+    }
+
+    public static boolean hasExtraSD(Context context){
+        String[] str = FileOperation.getVolumePaths(context);
+        ArrayList<String> dirList=new ArrayList<>();
+        for (String dir : str) {
+            File file = new File(dir);
+            long total_size = file.getTotalSpace();
+            if (total_size>0){
+                dirList.add(dir);
+            }
+        }
+        ArrayList<String> extraSDs=new ArrayList<>();
+        for (String dir:dirList){
+            if (!dir.equals(FileOperation.getMobilePath())){
+                extraSDs.add(dir);
+            }
+        }
+        return !extraSDs.isEmpty();
     }
 
     /**
@@ -131,6 +167,22 @@ public class FileOperation {
         }
         newbm.compress(Bitmap.CompressFormat.PNG, 20, out);
         return newbm;
+    }
+
+    public static String[] getVolumePaths(Context context) {
+        String[] paths = null;
+        StorageManager mStorageManager;
+        try {
+            mStorageManager = (StorageManager) context.getSystemService(Activity.STORAGE_SERVICE);
+            Method mMethodGetPaths;
+            mMethodGetPaths = mStorageManager.getClass()
+                    .getMethod("getVolumePaths");
+            paths = (String[]) mMethodGetPaths.invoke(mStorageManager);
+        } catch (IllegalArgumentException ignored) {
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return paths;
     }
 
 }

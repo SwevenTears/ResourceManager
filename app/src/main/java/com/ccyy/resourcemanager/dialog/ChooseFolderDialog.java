@@ -2,7 +2,6 @@ package com.ccyy.resourcemanager.dialog;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.DividerItemDecoration;
@@ -104,7 +103,7 @@ public class ChooseFolderDialog extends Dialog {
 
         show_folder_device.removeAllViews();
         new DeviceShow
-                (activity, show_folder_device, rootPath, present_path)
+                (activity, show_folder_device, present_path,rootPath,"手机储存")
                 .setOnClickItem(new DeviceShow.onClickItem() {
             @Override
             public void onClick(String jump_path) {

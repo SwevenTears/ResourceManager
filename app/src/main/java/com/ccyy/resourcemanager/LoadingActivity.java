@@ -1,7 +1,6 @@
 package com.ccyy.resourcemanager;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -12,7 +11,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.MotionEvent;
 import android.view.View;
 
 import com.ccyy.resourcemanager.tools.T;
@@ -38,7 +36,7 @@ public class LoadingActivity extends AppCompatActivity {
         mContentView = findViewById(R.id.fullscreen_content);
 
         hide();
-        t=new T(LoadingActivity.this);
+        t = new T(LoadingActivity.this);
     }
 
     private final Runnable mHidePart2Runnable = this::run;
@@ -64,7 +62,7 @@ public class LoadingActivity extends AppCompatActivity {
     }
 
 
-    private PermissionListener mlistener=new PermissionListener() {
+    private PermissionListener mlistener = new PermissionListener() {
         @Override
         public void onGranted() {  //所有权限授权成功
             startApp();
@@ -73,9 +71,9 @@ public class LoadingActivity extends AppCompatActivity {
         @Override
         public void onGranted(List<String> grantedPermission) { //授权失败权限集合
             t.error("授权失败");
-            String[] success=new String[grantedPermission.size()];
-            for(int i=0;i<grantedPermission.size();i++){
-                success[0]=grantedPermission.get(i);
+            String[] success = new String[grantedPermission.size()];
+            for (int i = 0; i < grantedPermission.size(); i++) {
+                success[0] = grantedPermission.get(i);
             }
             t.error("用户拒绝了授权");
             finish();
@@ -161,15 +159,14 @@ public class LoadingActivity extends AppCompatActivity {
     }
 
     private void run() {
-        if(Build.VERSION.SDK_INT >= 23){
+        if (Build.VERSION.SDK_INT >= 23) {
             String[] permission = {
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.RECORD_AUDIO
             };
             requestRunTimePermission(permission, mlistener);
-        }
-        else{
+        } else {
             startApp();
         }
     }

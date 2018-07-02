@@ -12,10 +12,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ccyy.resourcemanager.R;
+import com.ccyy.resourcemanager.tools.FileType;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 /**
  * Created by Sweven on 2018/6/13.
@@ -25,6 +29,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
 
     private LayoutInflater inflater;
     public ArrayList<FileData> fileDatas;
+    private Context context;
 
     private onClickItem mClickItem = null;
     private onLongClickItem mLongClickItem = null;
@@ -38,6 +43,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
     public FileAdapter(Context context, ArrayList<FileData> data) {
         inflater = LayoutInflater.from(context);
         this.fileDatas = data;
+        this.context=context;
 
     }
 
@@ -63,12 +69,30 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.FileViewHolder
     public void onBindViewHolder(@NonNull final FileViewHolder holder, final int position) {
         String name = fileDatas.get(position).getName();
         Bitmap bitmap = fileDatas.get(position).getFileIcon();
-
+        String path = fileDatas.get(position).getPath();
 
         holder.file_name.setText(name);
-        if (name.equals("<<previous>>"))
+        if (name.equals("<<previous>>")) {
             holder.file_name.setText("返回上一级");
-        holder.file_img.setImageBitmap(bitmap);
+        }
+        if (Pattern.compile("储存>>").matcher(name).find()) {
+            String dirName=name
+                    .replace("<<","")
+                    .replace(">>","");
+            holder.file_name.setText(dirName);
+        }
+        if (!FileType.isImageFileType(path)) {
+            holder.file_img.setImageBitmap(bitmap);
+        }
+        else {
+            Glide.with(context)
+                    .load(path)
+                    .centerCrop()
+                    .crossFade()
+                    .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                     .placeholder(R.drawable.image)
+                    .into(holder.file_img);
+        }
 
         cutShow_SelectState(holder, name, position);
 

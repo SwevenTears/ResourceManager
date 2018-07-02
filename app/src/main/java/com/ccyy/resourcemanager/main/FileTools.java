@@ -1,6 +1,5 @@
 package com.ccyy.resourcemanager.main;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -8,11 +7,8 @@ import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.util.Log;
 
-import com.ccyy.resourcemanager.MainActivity;
 import com.ccyy.resourcemanager.R;
-import com.ccyy.resourcemanager.ResourceManager;
 import com.ccyy.resourcemanager.music.PlayActivity;
 import com.ccyy.resourcemanager.photo.DisplayFullSizeImageActivity;
 import com.ccyy.resourcemanager.photo.ImageBean;
@@ -30,7 +26,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.jar.JarFile;
 
 /**
  * Created by Sweven on 2018/6/18.
@@ -46,17 +41,15 @@ public class FileTools {
     private static Bitmap bitmap_text;
     private static Bitmap unknown_file;
 
-    private static String rootPath;
+    private static String mobilePath = FileOperation.getMobilePath();
+    private static String[] extraSDPath;
 
     private static T t;
 
     /**
      * @param context
-     * @param rootPath 设置文件图标地址、传递 rootPath
      */
-    public FileTools(Context context, String rootPath) {
-
-        FileTools.rootPath = rootPath;
+    public FileTools(Context context) {
 
         folder_previous = BitmapFactory.decodeResource
                 (context.getResources(), R.drawable.folder_previous);
@@ -82,13 +75,33 @@ public class FileTools {
         t = new T(context);
     }
 
+    public static ArrayList<FileData> getRootList(Context context) {
+        ArrayList<FileData> dirList = new ArrayList<>();
+        extraSDPath = FileOperation.getExtraSDPath(context);
+        int i = 0;
+        dirList.add(new FileData
+                ("<<手机储存>>", mobilePath, folder_icon, 0, 0, false));
+        for (String dir : extraSDPath) {
+            i++;
+            String name;
+            name = "<<外置储存>>" + i;
+            if (extraSDPath.length == 1) {
+                name = "<<外置储存>>";
+            }
+            FileData data = new FileData(name, dir, folder_icon, 0, 0, false);
+            dirList.add(data);
+        }
+        return dirList;
+    }
+
     /**
      * 取得文件架构的method
      *
      * @param filePath 文件当前目录
+     * @param SDPath
      * @return 当前目录的文件列表
      */
-    public static ArrayList<FileData> getFileList(String filePath) {
+    public static ArrayList<FileData> getFileList(String filePath, String SDPath) {
 
 
         File f = new File(filePath);
@@ -99,7 +112,7 @@ public class FileTools {
 
         boolean isRoot = false;
 
-        if (!filePath.equals(rootPath)) {
+        if (!filePath.equals(SDPath)) {
             /* 设定为[返回上一级] */
             FileData fileData = new FileData("<<previous>>", f.getPath(), folder_previous,
                     0, 0, false);
@@ -124,22 +137,8 @@ public class FileTools {
 
                     //设置图像文件图标
                     if (FileType.isImageFileType(temp_path)) {
-                        Bitmap bitmap;
-                        String pathName=ResourceManager.App_Temp_Image_Path + "/" + temp_name;
-                        File imgFile=new File(pathName);
-                        if(imgFile.exists()){//判断是否存在缩略图
-                            bitmap = BitmapFactory.decodeFile(pathName);
-                        }
-                        else{
-                            try {
-                                bitmap = BitmapFactory.decodeFile(temp_path);
-                                bitmap = FileOperation.setImgSize(temp_name, bitmap, 80, 100);
-                            } catch (Exception e) {
-                                //默认图标
-                                bitmap = bitmap_image;
-                            }
-                        }
-                        FileData fileData = new FileData(temp_name, temp_path, bitmap,
+                        //图标放在加载数据时加载
+                        FileData fileData = new FileData(temp_name, temp_path, null,
                                 temp_last_data, temp_size, false);
                         allFile.add(fileData);
                     }
@@ -161,7 +160,7 @@ public class FileTools {
                             bitmap = ThumbnailUtils.extractThumbnail(bitmap, 80, 100, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
                         } catch (Exception e) {
                             //默认图标
-                            bitmap=bitmap_video;
+                            bitmap = bitmap_video;
                         }
                         FileData fileData = new FileData(temp_name, temp_path, bitmap,
                                 temp_last_data, temp_size, false);
@@ -373,11 +372,11 @@ public class FileTools {
         try {
             // 打开图像文件
             if (FileType.isImageFileType(path)) {
-                Intent intent=new Intent(context, DisplayFullSizeImageActivity.class);
-                intent.putExtra(DisplayFullSizeImageActivity.PICTURE_PATH, new ImageBean(path,false));
-                String[] str_imgs={path};
-                intent.putExtra("img[]",str_imgs);
-                intent.putExtra("present_position",""+0);
+                Intent intent = new Intent(context, DisplayFullSizeImageActivity.class);
+                intent.putExtra(DisplayFullSizeImageActivity.PICTURE_PATH, new ImageBean(path, false));
+                String[] str_imgs = {path};
+                intent.putExtra("img[]", str_imgs);
+                intent.putExtra("present_position", "" + 0);
                 context.startActivity(intent);
             }
 

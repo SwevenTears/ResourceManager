@@ -2,7 +2,6 @@ package com.ccyy.resourcemanager;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -49,8 +48,10 @@ import com.ccyy.resourcemanager.video.VideoActivity;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import static com.ccyy.resourcemanager.main.FileTools.getFileList;
+import static com.ccyy.resourcemanager.main.FileTools.getRootList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -97,7 +98,10 @@ public class MainActivity extends AppCompatActivity
     private TableLayout table_menu_layout;
     private LinearLayout table_menu_layout_replace;
 
-    private String rootPath = FileOperation.getMobilePath();
+    private String MobilePath = FileOperation.getMobilePath();
+    private String RootPath = "根目录";
+    private String SDPath;
+    private String SDName;
     private String present_path;
 
     private FileAdapter fileAdapter;
@@ -273,7 +277,12 @@ public class MainActivity extends AppCompatActivity
                         fileAdapter.addData(new_folder);
                         input_FolderName_ByCreateFolder.dismiss();
                     } else {
-                        t.error("创建失败,文件夹可能已经存在");
+                        if (!FileOperation.hasExtraSD(getApplicationContext())) {
+                            t.error("创建失败,文件夹可能已经存在");
+                        }
+                        else {
+                            t.error("创建失败,无法在外置储存卡创建文件夹");
+                        }
                     }
                 } else {
                     t.error("文件名不合法：文件名中不能包括以下字符：\n\\/:*?\"<>|,");
@@ -303,7 +312,12 @@ public class MainActivity extends AppCompatActivity
                                 setShowPattern();
                                 input_FileName_ByReName.dismiss();
                             } else {
-                                t.error("命名失败");
+                                if (!FileOperation.hasExtraSD(getApplicationContext())) {
+                                    t.error("命名失败");
+                                }
+                                else{
+                                    t.error("命名失败,暂未实现在外置储存卡上重命名");
+                                }
                             }
                         } else {
                             t.error("该目录下已存在");
@@ -332,7 +346,12 @@ public class MainActivity extends AppCompatActivity
                     fileAdapter.delData(file);
                     t.tips("删除成功");
                 } else {
-                    t.error("删除失败,暂不支持删除有文件的目录");
+                    if (!FileOperation.hasExtraSD(getApplicationContext())) {
+                        t.error("删除失败,暂不支持删除有文件的目录");
+                    }
+                    else{
+                        t.error("删除失败，暂不支持删除外置储存卡上的文件");
+                    }
                 }
             }
             setShowPattern();
@@ -485,8 +504,6 @@ public class MainActivity extends AppCompatActivity
         ResourceManager.createAppPath(ResourceManager.App_Temp_Image_Path);
         ResourceManager.createAppPath(ResourceManager.App_Temp_Video_Image_Path);
 
-        present_path = rootPath;
-
         file_recycler = findViewById(R.id.file_list);
         linearLayoutManager = new LinearLayoutManager(this);
         file_recycler.setLayoutManager(linearLayoutManager);
@@ -494,7 +511,18 @@ public class MainActivity extends AppCompatActivity
 
         show_device = findViewById(R.id.file_device);
 
-        getFileDir(rootPath, false);
+        if (!FileOperation.hasExtraSD(getApplicationContext())) {
+            SDPath = MobilePath;
+            RootPath=SDPath;
+            present_path = RootPath;
+            SDName = "<<手机储存>>";
+            getFileDir(MobilePath, false);
+        } else {
+            present_path = RootPath;
+            new FileTools(MainActivity.this);
+            ArrayList<FileData> allFile = getRootList(getApplicationContext());
+            loadData(allFile, false);
+        }
     }
 
     /**
@@ -505,9 +533,9 @@ public class MainActivity extends AppCompatActivity
      */
     public void getFileDir(String parent_file_path, boolean isParent) {
 
-        new FileTools(MainActivity.this, rootPath);
+        new FileTools(MainActivity.this);
 
-        ArrayList<FileData> allFile = getFileList(parent_file_path);
+        ArrayList<FileData> allFile = getFileList(parent_file_path, SDPath);
 
         loadData(allFile, isParent);
 
@@ -522,12 +550,12 @@ public class MainActivity extends AppCompatActivity
 
         show_device.removeAllViews();
         DeviceShow deviceShow = new DeviceShow
-                (MainActivity.this, show_device, rootPath, present_path);
+                (MainActivity.this, show_device, present_path, SDPath, SDName);
         deviceShow.setOnClickItem(new DeviceShow.onClickItem() {
             @Override
             public void onClick(String jump_path) {
                 if (!present_path.equals(jump_path)) {
-                    present_path=jump_path;
+                    present_path = jump_path;
                     getFileDir(present_path, false);
                 }
             }
@@ -619,6 +647,11 @@ public class MainActivity extends AppCompatActivity
             present_path = parentPath;
             previous_path = path;
             getFileDir(present_path, true);
+        } else if (Pattern.compile("储存>>").matcher(name).find()) {
+            SDPath = path;
+            SDName = name;
+            present_path = path;
+            getFileDir(present_path, false);
         } else {
             if (file.isDirectory()) {
                 present_path = path;
@@ -678,13 +711,21 @@ public class MainActivity extends AppCompatActivity
             DrawerLayout drawer = findViewById(R.id.drawer_layout);
             if (!drawer.isDrawerOpen(GravityCompat.START)) {
                 if (!isCheckPattern) {
-                    if (!present_path.equals(rootPath)) {
-                        //返回上一级，当前目录present_path将作为之前访问的目录previous_path,
-                        // 因此，当前目录present_path应该是当前目录上一级的目录new File(present_path).getParent()
-                        previous_path = present_path;
-                        present_path = new File(present_path).getParent();
-                        getFileDir(present_path, true);
+                    if (!present_path.equals(RootPath)) {
+                        if (present_path.equals(SDPath)) {
+                            present_path = RootPath;
+                            new FileTools(MainActivity.this);
+                            ArrayList<FileData> allFile = getRootList(getApplicationContext());
+                            loadData(allFile, false);
+                        } else {
+                            //返回上一级，当前目录present_path将作为之前访问的目录previous_path,
+                            // 因此，当前目录present_path应该是当前目录上一级的目录new File(present_path).getParent()
+                            previous_path = present_path;
+                            present_path = new File(present_path).getParent();
+                            getFileDir(present_path, true);
+                        }
                     } else {
+
                         long secondTime = System.currentTimeMillis();
                         if (secondTime - firstTime > 1000) {
                             t.tips("再按一次退出");
@@ -696,8 +737,7 @@ public class MainActivity extends AppCompatActivity
                 } else {
                     setShowPattern();
                 }
-            }
-            else {
+            } else {
                 drawer.closeDrawer(GravityCompat.START);
             }
         }

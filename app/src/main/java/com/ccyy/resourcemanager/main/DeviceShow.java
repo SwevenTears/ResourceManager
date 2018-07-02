@@ -12,24 +12,32 @@ import android.widget.TextView;
  */
 public class DeviceShow {
 
-    private String rootPath;
+    private String SDName;
+    private String SDPath;
 
     private onClickItem mListener;
 
     /**
-     * @param context      MainActivity.this
+     * @param context      Activity.this
      * @param show_device  容器
-     * @param rootPath     根目录
      * @param present_path 当前目录
-     * @method 导航条制作
+     * @param SDPath       当前储存卡的地址
+     * @param SDName       当前储存卡的名称
      */
     @SuppressLint("SetTextI18n")
-    public DeviceShow
-    (Context context, LinearLayout show_device, String rootPath, String present_path) {
-        String parent_path_show;
-        this.rootPath = rootPath;
+    public DeviceShow(Context context, LinearLayout show_device, String present_path, String SDPath, String SDName) {
+        String parent_path_show="根目录";
+        this.SDPath=SDPath;
         // 将手机内存目录替换成可读文字
-        parent_path_show = present_path.replace(rootPath, "手机内存");
+        try {
+            String name=SDName
+                    .replace("<<","")
+                    .replace(">>","");
+            this.SDName=name;
+            parent_path_show = present_path.replace(SDPath, name);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // 将目录分隔开进行渲染
         String parent_path_shows[] = parent_path_show.split("/");
@@ -70,13 +78,19 @@ public class DeviceShow {
                     jump_path = String.format("%s%s", jump_path, "/" + files[i]);
                 }
             }
-            jump_path = jump_path.replace("手机内存", rootPath);
+            try {
+                jump_path = jump_path.replace(SDName, SDPath);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         @Override
         public void onClick(View v) {
-            if (mListener != null) {
-                mListener.onClick(jump_path);
+            if (!jump_path.equals("根目录")) {
+                if (mListener != null) {
+                    mListener.onClick(jump_path);
+                }
             }
         }
     }
