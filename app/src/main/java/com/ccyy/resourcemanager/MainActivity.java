@@ -278,7 +278,7 @@ public class MainActivity extends AppCompatActivity
                         fileAdapter.addData(new_folder);
                         input_FolderName_ByCreateFolder.dismiss();
                     } else {
-                        if (!FileOperation.hasExtraSD(getApplicationContext())) {
+                        if (SDName.equals("<<手机储存>>")) {
                             t.error("创建失败,文件夹可能已经存在");
                         }
                         else {
@@ -313,7 +313,7 @@ public class MainActivity extends AppCompatActivity
                                 setShowPattern();
                                 input_FileName_ByReName.dismiss();
                             } else {
-                                if (!FileOperation.hasExtraSD(getApplicationContext())) {
+                                if (SDName.equals("<<手机储存>>")) {
                                     t.error("命名失败");
                                 }
                                 else{
@@ -347,7 +347,7 @@ public class MainActivity extends AppCompatActivity
                     fileAdapter.delData(file);
                     t.tips("删除成功");
                 } else {
-                    if (!FileOperation.hasExtraSD(getApplicationContext())) {
+                    if (SDName.equals("<<手机储存>>")) {
                         t.error("删除失败,暂不支持删除有文件的目录");
                     }
                     else{
