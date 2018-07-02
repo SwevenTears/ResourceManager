@@ -127,12 +127,17 @@ public class FileTools {
                         Bitmap bitmap;
                         String pathName=ResourceManager.App_Temp_Image_Path + "/" + temp_name;
                         File imgFile=new File(pathName);
-                        if(imgFile.exists()){
+                        if(imgFile.exists()){//判断是否存在缩略图
                             bitmap = BitmapFactory.decodeFile(pathName);
                         }
                         else{
-                            bitmap = BitmapFactory.decodeFile(temp_path);
-                            bitmap = FileOperation.setImgSize(temp_name, bitmap, 80, 100);
+                            try {
+                                bitmap = BitmapFactory.decodeFile(temp_path);
+                                bitmap = FileOperation.setImgSize(temp_name, bitmap, 80, 100);
+                            } catch (Exception e) {
+                                //默认图标
+                                bitmap = bitmap_image;
+                            }
                         }
                         FileData fileData = new FileData(temp_name, temp_path, bitmap,
                                 temp_last_data, temp_size, false);
@@ -149,21 +154,18 @@ public class FileTools {
 
                     // 设置视频文件的图标
                     else if (FileType.isVideoFileType(temp_path)) {
+                        Bitmap bitmap;
                         try {
-                            Bitmap bitmap;
                             // 获取视频的缩略图
                             bitmap = ThumbnailUtils.createVideoThumbnail(temp_path, MediaStore.Images.Thumbnails.MICRO_KIND);
                             bitmap = ThumbnailUtils.extractThumbnail(bitmap, 80, 100, ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
-
-                            FileData fileData = new FileData(temp_name, temp_path, bitmap,
-                                    temp_last_data, temp_size, false);
-                            allFile.add(fileData);
                         } catch (Exception e) {
                             //默认图标
-                            FileData fileData = new FileData(temp_name, temp_path, bitmap_video,
-                                    temp_last_data, temp_size, false);
-                            allFile.add(fileData);
+                            bitmap=bitmap_video;
                         }
+                        FileData fileData = new FileData(temp_name, temp_path, bitmap,
+                                temp_last_data, temp_size, false);
+                        allFile.add(fileData);
                     }
 
                     // 设置文本文档文件的图标
@@ -203,9 +205,8 @@ public class FileTools {
         ArrayList<String> folder_names = new ArrayList<>();
         for (int i = 0; i < allFile.size(); i++)
             folder_names.add(allFile.get(i).getName());
-        int previous_position = FileOperation.find_folder_position(name, folder_names);
 
-        return previous_position;
+        return FileOperation.find_folder_position(name, folder_names);
     }
 
     /**
