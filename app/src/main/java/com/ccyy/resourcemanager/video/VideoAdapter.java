@@ -9,25 +9,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import com.ccyy.resourcemanager.R;
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 
-
  class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> {
     private List<MyFile> myFileList;
     private Context mContext;
-
     public VideoAdapter(Context context, List<MyFile> list) {
         super();
         mContext=context;
         myFileList = list;
     }
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (mContext == null) {
@@ -39,6 +34,10 @@ import java.util.List;
         return holder;
     }
 
+     /** 数据绑定
+      * @param holder
+      * @param position
+      */
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         MyFile myFile = myFileList.get(position);
@@ -46,21 +45,17 @@ import java.util.List;
         holder.myFileImage.setImageBitmap(myFile.getBitmap());
         holder.myFileSize.setText(getFileSizeChange(new File(myFile.getFilePath())));
         holder.myFileDate.setText(getModifiedTime(new File(myFile.getFilePath())));
-
     }
-
     @Override
     public int getItemCount() {
         return myFileList.size();
     }
-
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView myFileName;
         private TextView myFileSize;
         private TextView myFileDate;
         private ImageView myFileImage;
         private LinearLayout startPlay;
-
         public ViewHolder(View itemView) {
             super(itemView);
             myFileName = itemView.findViewById(R.id.myFileName);
@@ -69,9 +64,7 @@ import java.util.List;
             myFileDate = itemView.findViewById(R.id.fileDate);
             startPlay = itemView.findViewById(R.id.startPlay);
             startPlay.setOnClickListener(this);
-
         }
-
         @Override
         public void onClick(View view) {
             int position = getAdapterPosition();
@@ -83,16 +76,21 @@ import java.util.List;
             mContext.startActivity(intent);
         }
     }
-
+     /**
+      * @param f 获取视频文件时间
+      * @return 返回修改格式后的日期
+      */
      public String getModifiedTime(File f) {
          Calendar cal = Calendar.getInstance();
          long time = f.lastModified();
-         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//日期格式
          cal.setTimeInMillis(time);
          return formatter.format(cal.getTime());
-
      }
-
+     /**
+      * @param file 判断文件的大小
+      * @return 返回文件的大小值：B/K/M/G
+      */
      public String getFileSizeChange(File file){
          long size = file.length();
          //判断大小是用什么单位，K/M/G
