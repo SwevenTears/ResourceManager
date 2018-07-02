@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.LinearSnapHelper;
+import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,6 +42,8 @@ public class DisplayFullSizeImageActivity extends AppCompatActivity {
         //vpager_one = (ViewPager) findViewById(R.id.full_size_image_1);
         Intent intent = getIntent();
 
+
+
         ImageBean image = (ImageBean) intent.getSerializableExtra(PICTURE_PATH);
         String[] urls = intent.getStringArrayExtra("img[]");
 
@@ -50,16 +52,25 @@ public class DisplayFullSizeImageActivity extends AppCompatActivity {
             imgPathList.add(urls[i]);
         }
 
-
         present_position = Integer.parseInt(intent.getStringExtra("present_position"));
         Uri uri = Uri.fromFile(new File(image.getImgPath()));//得到图片的路径
 
 
         mRecyclerView = (RecyclerView) findViewById(R.id.full_size_image_recycler_view);
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(DisplayFullSizeImageActivity.this, LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(DisplayFullSizeImageActivity.this,
+                LinearLayoutManager.HORIZONTAL, false);//HORIZONTAL RecyclerView横向
         mRecyclerView.setLayoutManager(linearLayoutManager);
         linearLayoutManager.scrollToPositionWithOffset(present_position,0);
-        new LinearSnapHelper().attachToRecyclerView(mRecyclerView);
+
+        //RecyclerView在24.2.0版本中新增了SnapHelper这个辅助类，用于辅助RecyclerView在滚动结束时将Item对齐到某个位置。
+        // 特别是列表横向滑动时，很多时候不会让列表滑到任意位置，而是会有一定的规则限制，这时候就可以通过SnapHelper来定义对齐规则了。
+        // new LinearSnapHelper().attachToRecyclerView(mRecyclerView);只能实现居中显示
+
+        //25.1.0版本中官方又提供了一个PagerSnapHelper的子类，可以使RecyclerView像ViewPager一样的效果，一次只能滑一页，而且居中显示。
+        new PagerSnapHelper().attachToRecyclerView(mRecyclerView);
+
+        mRecyclerView.addItemDecoration(new SpaceItemDecoration(15));//每一个item之间的间隔
+
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
 
         movieAdapter=new MovieAdapter(DisplayFullSizeImageActivity.this,imgPathList);
