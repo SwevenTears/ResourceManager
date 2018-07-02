@@ -77,19 +77,16 @@ public class FileDetailsActivity extends AppCompatActivity {
         File parent_folder = new File(folder_path);
         File[] parents = parent_folder.listFiles();
         for (File child : parents) {
-            if (!child.isHidden()) {
-                if (child.isDirectory()) {
-                    count[1]++;
-                    int[] child_count = get_FolderCount_FileCount(child.getPath());
-                    count[0] += child_count[0];
-                    count[1] += child_count[1];
-                    count[2] += child_count[2];
-                } else {
-                    count[2]++;
-                }
-                count[0]++;
+            if (child.isDirectory()) {
+                count[1]++;
+                int[] child_count = get_FolderCount_FileCount(child.getPath());
+                count[0] += child_count[0];
+                count[1] += child_count[1];
+                count[2] += child_count[2];
+            } else {
+                count[2]++;
             }
-
+            count[0]++;
         }
 
         return count;
