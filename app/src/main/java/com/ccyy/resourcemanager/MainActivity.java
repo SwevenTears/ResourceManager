@@ -117,6 +117,7 @@ public class MainActivity extends AppCompatActivity
 
     private PopupMenu popupMenu_more;
 
+    private RelativeLayout content_main_panel;
     private LinearLayout file_menu_share;
     private LinearLayout file_menu_cut;
     private LinearLayout file_menu_copy;
@@ -147,8 +148,8 @@ public class MainActivity extends AppCompatActivity
 
         folderChooser = new ChooseFolderDialog(MainActivity.this);
 
-        initFile();
         setBottomMenuId();
+        initFile();
     }
 
     /**
@@ -510,6 +511,8 @@ public class MainActivity extends AppCompatActivity
         file_recycler.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
         show_device = findViewById(R.id.file_device);
+        content_main_panel=findViewById(R.id.content_main_panel);
+        content_main_panel.removeView(bottom_panel);
 
         if (!FileOperation.hasExtraSD(getApplicationContext())) {
             SDPath = MobilePath;
@@ -519,6 +522,9 @@ public class MainActivity extends AppCompatActivity
             getFileDir(MobilePath, false);
         } else {
             present_path = RootPath;
+            if (bottom_panel.isShown()) {
+                content_main_panel.removeView(bottom_panel);
+            }
             new FileTools(MainActivity.this);
             ArrayList<FileData> allFile = getRootList(getApplicationContext());
             loadData(allFile, false);
@@ -547,6 +553,15 @@ public class MainActivity extends AppCompatActivity
      */
     private void loadData(@NonNull ArrayList<FileData> data, boolean isParent) {
 
+        if (RootPath.equals("根目录")){
+            if (present_path.equals(RootPath)) {
+                content_main_panel.removeView(bottom_panel);
+            }
+            else{
+                if (!bottom_panel.isShown())
+                    content_main_panel.addView(bottom_panel);
+            }
+        }
 
         show_device.removeAllViews();
         DeviceShow deviceShow = new DeviceShow
@@ -590,18 +605,20 @@ public class MainActivity extends AppCompatActivity
 
             }
         });
-        fileAdapter.setOnLongClickItem(new FileAdapter.onLongClickItem() {
-            @Override
-            public void onClick(ArrayList<FileData> fileData, int position) {
-                String name = fileData.get(position).getName();
+        if (!present_path.equals(RootPath) && RootPath.equals("根目录")) {
+            fileAdapter.setOnLongClickItem(new FileAdapter.onLongClickItem() {
+                @Override
+                public void onClick(ArrayList<FileData> fileData, int position) {
+                    String name = fileData.get(position).getName();
 
-                if (!name.equals("<<previous>>")) {
-                    if (!isCheckPattern) {
-                        setSelectPattern(fileData, position);
+                    if (!name.equals("<<previous>>")) {
+                        if (!isCheckPattern) {
+                            setSelectPattern(fileData, position);
+                        }
                     }
                 }
-            }
-        });
+            });
+        }
     }
 
     /**
