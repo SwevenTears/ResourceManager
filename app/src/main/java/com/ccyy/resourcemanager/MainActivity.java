@@ -522,9 +522,6 @@ public class MainActivity extends AppCompatActivity
             getFileDir(MobilePath, false);
         } else {
             present_path = RootPath;
-            if (bottom_panel.isShown()) {
-                content_main_panel.removeView(bottom_panel);
-            }
             new FileTools(MainActivity.this);
             ArrayList<FileData> allFile = getRootList(getApplicationContext());
             loadData(allFile, false);
