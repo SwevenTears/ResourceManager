@@ -13,9 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- *
- */
+
 public class VideoActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private LinearLayoutManager linearLayoutManager;
@@ -28,15 +26,12 @@ public class VideoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_video_list);
         myFileList = new ArrayList<>();
         getVideo();
-        //initMyFile(Environment.getExternalStorageDirectory());//获取手机储存根目录
         adapter = new VideoAdapter(VideoActivity.this,myFileList);
         mRecyclerView = (RecyclerView) findViewById(R.id.id_recyclerview3);
         linearLayoutManager = new LinearLayoutManager(VideoActivity.this);
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));//设置分割线
         mRecyclerView.setAdapter(adapter);
-
-
     }
 
     void getVideo(){
@@ -48,7 +43,9 @@ public class VideoActivity extends AppCompatActivity {
         Uri uri=MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
         getContentProvider(uri,projection,orderBy);
     }
-
+    /**
+     * ContentProvider遍历手机里面的所有视频
+     */
     private void getContentProvider(Uri uri, String[] projection, String orderBy) {
         Cursor cursor=getContentResolver().query(uri,projection,null,null,orderBy);
         if (null==cursor){
@@ -56,14 +53,12 @@ public class VideoActivity extends AppCompatActivity {
         }
         while (cursor.moveToNext()){
                 String path=cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATA));
-                String name=cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DISPLAY_NAME));
-                String size= cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.SIZE));
-                String date=cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATE_MODIFIED));
+                String name=cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DISPLAY_NAME));//视频的名称
+                String size= cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.SIZE));//视频的大小
+                String date=cursor.getString(cursor.getColumnIndex(MediaStore.Video.Media.DATE_MODIFIED));//视频的日期
                 int media_id=cursor.getInt(cursor.getColumnIndex(MediaStore.Video.Media._ID));
-
                 Bitmap bitmap=MediaStore.Video.Thumbnails.getThumbnail(getContentResolver(),
-                        media_id, MediaStore.Video.Thumbnails.MICRO_KIND, null);
-
+                        media_id, MediaStore.Video.Thumbnails.MICRO_KIND, null); //获取视频的缩略图
                 myFileList.add(new MyFile(name,size,date,path,bitmap));
         }
     }
