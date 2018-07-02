@@ -651,14 +651,10 @@ public class MainActivity extends AppCompatActivity
         fileAdapter.showCheckBox(position);
         isCheckPattern = true;
         selectItemCount = 1;
-        file_menu_share.setEnabled(true);
-        file_menu_cut.setEnabled(true);
-        file_menu_copy.setEnabled(true);
-        file_menu_delete.setEnabled(true);
-        file_menu_more.setEnabled(true);
         bottom_panel.removeView(table_menu_layout_replace);
         bottom_panel.addView(table_menu_layout);
         file_list.add(fileData.get(position).getPath());
+        setMenuEnable(selectItemCount);
     }
 
     /**
