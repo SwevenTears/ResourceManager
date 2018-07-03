@@ -507,7 +507,6 @@ public class MainActivity extends AppCompatActivity
 
         show_device = findViewById(R.id.file_device);
         content_main_panel=findViewById(R.id.content_main_panel);
-        content_main_panel.removeView(bottom_panel);
 
         if (!FileOperation.hasExtraSD(getApplicationContext())) {
             SDPath = MobilePath;
@@ -517,6 +516,7 @@ public class MainActivity extends AppCompatActivity
             getFileDir(MobilePath, false);
         } else {
             present_path = RootPath;
+            content_main_panel.removeView(bottom_panel);
             new FileTools(MainActivity.this);
             ArrayList<FileData> allFile = getRootList(getApplicationContext());
             loadData(allFile, false);
