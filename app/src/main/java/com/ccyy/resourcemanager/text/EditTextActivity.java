@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -71,11 +72,22 @@ public class EditTextActivity extends AppCompatActivity implements PopupMenu.OnM
         editText = findViewById(R.id.edit_text_scroll);
 
         setEditable_OF_EditText(false);
+        ActionBar actionBar=getSupportActionBar();
 
         Intent intent = getIntent();
-        TXT_name = intent.getStringExtra("File_Name");
-        TXT_path = intent.getStringExtra("File_Path");
-        Objects.requireNonNull(getSupportActionBar()).setTitle(TXT_name);
+
+        String action=intent.getAction();
+        if(intent.ACTION_VIEW.equals(action)){
+            TXT_path=intent.getDataString().replace("file://","");
+            File file=new File(TXT_path);
+            TXT_name=file.getName();
+        }
+        else{
+            TXT_name = intent.getStringExtra("File_Name");
+            TXT_path = intent.getStringExtra("File_Path");
+        }
+
+        Objects.requireNonNull(actionBar).setTitle(TXT_name);
         showTextData(TXT_path);
 
         menuInflater = getMenuInflater();

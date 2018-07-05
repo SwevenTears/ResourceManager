@@ -86,7 +86,7 @@ public class FileOperation {
     }
 
     /**
-     * @return 获取一个外置SD卡位置
+     * @return 获取所有外置SD卡位置
      */
     public static String[] getExtraSDPath(Context context) {
         String[] str = FileOperation.getVolumePaths(context);
@@ -114,6 +114,10 @@ public class FileOperation {
         return new String[]{"<<no_find>>"};
     }
 
+    /**
+     * @param context ，
+     * @return 是否存在外置储存卡
+     */
     public static boolean hasExtraSD(Context context){
         String[] str = FileOperation.getVolumePaths(context);
         ArrayList<String> dirList=new ArrayList<>();
